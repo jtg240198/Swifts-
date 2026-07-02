@@ -198,6 +198,20 @@
   .team-card li{font-size:13px; color:var(--grey); margin-bottom:3px;}
   .team-card li b{color:var(--paper); font-weight:600;}
 
+  /* ---------- LEAGUE TABLES ---------- */
+  .table-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;}
+  .table-card{
+    display:flex; flex-direction:column; gap:6px;
+    border:1px solid var(--line); padding:18px; background:var(--ink-2);
+    transition:border-color .15s;
+  }
+  a.table-card:hover{border-color:var(--gold);}
+  .table-card .t-team{font-family:'Anton',sans-serif; font-size:17px; letter-spacing:0.4px;}
+  .table-card .t-league{font-family:'Space Mono',monospace; font-size:10px; color:var(--grey); text-transform:uppercase; letter-spacing:1px;}
+  .table-card .t-cta{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-top:8px;}
+  .table-card.pending{opacity:0.45;}
+  .table-card.pending .t-cta{color:var(--grey);}
+
   /* ---------- COACHES ---------- */
   .coach-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px;}
   .coach-card{border:1px solid var(--line); padding:20px; text-align:left; background:var(--ink-2);}
@@ -264,6 +278,7 @@
     <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     <nav class="links" id="navLinks">
       <a href="#fixtures">Fixtures</a>
+      <a href="#tables">Tables</a>
       <a href="#teams">Teams</a>
       <a href="#photos">Photos</a>
       <a href="#coaches">Coaches</a>
@@ -296,7 +311,18 @@
     </div>
 
     <div id="fixtureList"></div>
-    <p class="fixture-note">Pre-season fixtures — Ladies fixtures to be added.</p>
+    <p class="fixture-note">1st Team pre-season friendlies · Ladies NIWFA Championship 2026.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section id="tables">
+    <div class="head">
+      <span class="eyebrow">Standings</span>
+      <h2>League Tables</h2>
+      <p>Live tables on each league's official site — always up to date.</p>
+    </div>
+    <div class="table-grid" id="tableGrid"></div>
   </section>
 
   <hr class="divider">
@@ -361,6 +387,7 @@
   <p>Belfast, Northern Ireland</p>
   <div class="foot-links">
     <a href="#fixtures">Fixtures</a>
+    <a href="#tables">Tables</a>
     <a href="#teams">Teams</a>
     <a href="#photos">Photos</a>
     <a href="#coaches">Coaches</a>
@@ -383,7 +410,7 @@
         {name:"1st Team", league:"National Conference", people:[["Manager","Eamon McCarthy"],["Coach","Dermot McVeigh"],["Goalkeeper Coach","Ciaran Stitt"]]},
         {name:"Reserves", league:"BPIL Division 2", people:[["Manager","David O'Neill"],["Coach","Patrick McCann"]]},
         {name:"Strollers", league:"BDFL", people:[["Manager","Daniel Ryder"],["Coach","Gerald Tate"],["Coach","Kevin McCloskey"]]},
-        {name:"Ladies", league:"Seniors", people:[["Coach","David O'Neill"]]},
+        {name:"Ladies", league:"NIWFA Championship", people:[["Coach","David O'Neill"]]},
       ]
     },
     {
@@ -398,9 +425,8 @@
         {name:"2014s", league:"SBYL", people:[["Coach","Brendan Dornan"]]},
         {name:"2014 Colts", league:"SBYL", people:[["Coach","Sean Rooney"],["Coach","Sean Austin"]]},
         {name:"2014 Development", league:"SBYL", people:[["Coach","Michael Flannery"],["Coach","Stephen Doyle"],["Coach","Sean Hanna"]]},
-        {name:"2015s", league:"SBYL", people:[["Coach","Michael Hannaway"]]},
-        {name:"2015 Girls", league:"SBYL", people:[["Coach","TBC"]]},
-        {name:"2016s", league:"SBYL", people:[["Coach","TBC"]]},
+        {name:"2015s", league:"SBYL", people:[["Coach","Harry McDonnell"],["Coach","Conor McLarnon"]]},
+        {name:"2015 Girls", league:"SBYL", people:[["Coach","James Carlin"]]},
       ]
     },
     {
@@ -469,6 +495,15 @@
     {team:"1st Team", opp:"Ards Rangers", date:"SAT 18 JUL · 2PM KO", venue:"Drome Park", status:"upcoming"},
     {team:"1st Team", opp:"Albert Foundry", date:"TUE 21 JUL · 7PM KO", venue:"Paisley Park", status:"upcoming"},
     {team:"1st Team", opp:"Warrenpoint Town", date:"SAT 25 JUL · 2PM KO", venue:"Milltown", status:"upcoming"},
+    {team:"Ladies", opp:"Sion Swifts Ladies", date:"FRI 10 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballyclare Comrades Ladies", date:"WED 22 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballymoney United Ladies", date:"WED 29 JUL · 7:45PM KO", venue:"Paddy's Park", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Strabane Athletic Ladies", date:"WED 05 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Bangor FC Ladies", date:"WED 12 AUG · 7:45PM KO", venue:"Clandeboye Park", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballymena United Women", date:"WED 19 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Craigavon City Ladies", date:"FRI 28 AUG · 7:45PM KO", venue:"Drumgor Road", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Greenisland Women", date:"WED 02 SEP · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Sion Swifts Ladies", date:"WED 09 SEP · 7:45PM KO", venue:"Melvin 3G", status:"upcoming", comp:"NIWFA"},
   ];
 
   const fixtureList = document.getElementById('fixtureList');
@@ -486,7 +521,7 @@
         <div class="team">${f.opp}</div>
         <div class="meta">${isUpcoming ? f.venue : 'Full Time'}</div>
       </div>
-      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? 'Pre-Season' : f.result}</div>
+      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? (f.comp || 'Pre-Season') : f.result}</div>
     `;
     fixtureList.appendChild(row);
   });
@@ -500,6 +535,43 @@
       : `<span class="tick">${f.team} <span class="res">${f.score}</span> ${f.opp}</span>`
   ).join('');
   document.getElementById('tickerTrack').innerHTML = tickerHtml + tickerHtml; // doubled for seamless loop
+
+  // ---------- LEAGUE TABLES ----------
+  // Add each league's URL as you get them; null = shows as "coming soon"
+  const leagueTables = [
+    {team:"1st Team", league:"National Conference", url:null},
+    {team:"Reserves", league:"BPIL Division 2", url:null},
+    {team:"Strollers", league:"BDFL", url:null},
+    {team:"Ladies", league:"NIWFA Championship", url:"https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX0NPTVBFVElUSU9OLGlkPTQ2NDMzODAz"},
+    {team:"2009s", league:"SBYL", url:null},
+    {team:"2010s", league:"SBYL", url:null},
+    {team:"2012s", league:"SBYL", url:null},
+    {team:"2013s", league:"SBYL", url:null},
+    {team:"2013 Colts", league:"SBYL", url:null},
+    {team:"2014s", league:"SBYL", url:null},
+    {team:"2014 Colts", league:"SBYL", url:null},
+    {team:"2014 Development", league:"SBYL", url:null},
+    {team:"2015s", league:"SBYL", url:null},
+    {team:"2015 Girls", league:"SBYL", url:null},
+  ];
+
+  const tableGrid = document.getElementById('tableGrid');
+  leagueTables.forEach(t=>{
+    if(t.url){
+      const a = document.createElement('a');
+      a.className = 'table-card';
+      a.href = t.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.innerHTML = `<span class="t-team">${t.team}</span><span class="t-league">${t.league}</span><span class="t-cta">View table &rarr;</span>`;
+      tableGrid.appendChild(a);
+    } else {
+      const d = document.createElement('div');
+      d.className = 'table-card pending';
+      d.innerHTML = `<span class="t-team">${t.team}</span><span class="t-league">${t.league}</span><span class="t-cta">Link coming soon</span>`;
+      tableGrid.appendChild(d);
+    }
+  });
 
   // ---------- EVENTS (placeholder) ----------
   const events = [
