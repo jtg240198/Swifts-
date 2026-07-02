@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>St James' Swifts FC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0c0d;
+    --ink-2:#17171a;
+    --gold:#f6c500;
+    --gold-dim:#c9a300;
+    --green:#1f6b3b;
+    --paper:#f6f4ec;
+    --grey:#9a9a9e;
+    --line:rgba(246,244,236,0.12);
+    --radius:2px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Anton',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-weight:400;
+  }
+  .mono{font-family:'Space Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%;}
+  .wrap{max-width:1160px; margin:0 auto; padding:0 24px;}
+  .eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(12,12,13,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; max-width:1160px; margin:0 auto;
+  }
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand img{width:38px; height:38px; border-radius:50%;}
+  .brand span{font-family:'Anton',sans-serif; font-size:18px; letter-spacing:0.5px;}
+  nav.links{display:flex; gap:28px; font-size:13px; letter-spacing:0.5px; text-transform:uppercase; font-weight:600;}
+  nav.links a{opacity:0.75; transition:opacity .15s, color .15s;}
+  nav.links a:hover{opacity:1; color:var(--gold);}
+  .nav-toggle{display:none; background:none; border:none; color:var(--paper); font-size:24px; cursor:pointer;}
+
+  @media (max-width:760px){
+    nav.links{
+      position:absolute; top:100%; left:0; right:0;
+      background:var(--ink); flex-direction:column; gap:0;
+      max-height:0; overflow:hidden; transition:max-height .25s ease;
+      border-bottom:1px solid var(--line);
+    }
+    nav.links.open{max-height:320px;}
+    nav.links a{padding:16px 24px; border-top:1px solid var(--line);}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    padding:90px 24px 60px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(246,197,0,0.18), transparent 60%),
+      var(--ink);
+    border-bottom:1px solid var(--line);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 60px, rgba(246,197,0,0.035) 60px 62px);
+    pointer-events:none;
+  }
+  .hero-crest{width:120px; height:120px; border-radius:50%; margin:0 auto 28px; box-shadow:0 0 0 3px var(--gold), 0 20px 50px rgba(0,0,0,0.5);}
+  .hero h1{
+    font-size:clamp(48px, 10vw, 108px);
+    line-height:0.92;
+    color:var(--gold);
+    text-shadow:0 6px 0 rgba(0,0,0,0.35);
+  }
+  .hero h1 small{display:block; color:var(--paper); font-size:0.34em; letter-spacing:4px; margin-bottom:10px;}
+  .hero p.tag{
+    max-width:520px; margin:22px auto 0;
+    color:var(--grey); font-size:16px;
+  }
+  .hero .cta-row{display:flex; gap:14px; justify-content:center; margin-top:36px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:14px 28px;
+    font-family:'Space Mono',monospace; font-size:13px; letter-spacing:1px;
+    text-transform:uppercase; border:1px solid var(--gold);
+    transition:transform .15s, background .15s, color .15s;
+  }
+  .btn-solid{background:var(--gold); color:var(--ink); font-weight:700;}
+  .btn-solid:hover{transform:translateY(-2px); background:#fff;}
+  .btn-outline{color:var(--gold);}
+  .btn-outline:hover{background:var(--gold); color:var(--ink);}
+
+  /* ---------- SCOREBOARD TICKER (signature element) ---------- */
+  .ticker-band{
+    background:var(--green);
+    border-top:1px solid rgba(0,0,0,0.3);
+    border-bottom:1px solid rgba(0,0,0,0.3);
+    overflow:hidden;
+    white-space:nowrap;
+    position:relative;
+  }
+  .ticker-band .ticker-track{
+    display:inline-flex;
+    animation:scroll-left 38s linear infinite;
+  }
+  .ticker-band:hover .ticker-track{animation-play-state:paused;}
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  .tick{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'Space Mono',monospace; font-size:13px;
+    padding:12px 32px; border-right:1px solid rgba(255,255,255,0.15);
+    color:#eafcef;
+  }
+  .tick .res{color:var(--gold); font-weight:700;}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:80px 0;}
+  section .head{margin-bottom:44px; max-width:640px;}
+  section .head h2{font-size:clamp(30px,5vw,44px); margin-top:8px;}
+  section .head p{color:var(--grey); margin-top:12px; font-size:15px;}
+  .divider{border:none; border-top:1px solid var(--line); margin:0;}
+
+  /* ---------- FIXTURES ---------- */
+  .fixture-card{
+    display:grid; grid-template-columns:1fr auto 1fr auto;
+    align-items:center; gap:18px;
+    padding:20px 22px; border:1px solid var(--line); margin-bottom:12px;
+    background:var(--ink-2);
+  }
+  .fixture-card .team{font-weight:700; font-size:15px;}
+  .fixture-card .team.us{color:var(--gold);}
+  .fixture-card .meta{font-family:'Space Mono',monospace; font-size:11px; color:var(--grey); text-transform:uppercase; letter-spacing:1px;}
+  .fixture-card .score{font-family:'Space Mono',monospace; font-weight:700; font-size:20px; text-align:center; min-width:64px;}
+  .fixture-card .score.pending{color:var(--grey); font-size:14px;}
+  .fixture-card .tag{
+    font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1px;
+    padding:4px 8px; border:1px solid var(--gold); color:var(--gold); text-transform:uppercase; justify-self:end;
+  }
+  .fixture-card .tag.loss{border-color:#e2564f; color:#e2564f;}
+  .fixture-card .tag.draw{border-color:var(--grey); color:var(--grey);}
+  @media (max-width:600px){
+    .fixture-card{grid-template-columns:1fr auto; grid-template-rows:auto auto; row-gap:10px;}
+    .fixture-card .tag{grid-column:2; grid-row:1;}
+  }
+  .fixture-note{
+    margin-top:20px; font-family:'Space Mono',monospace; font-size:12px; color:var(--grey);
+    border-left:2px solid var(--gold); padding-left:12px;
+  }
+
+  /* ---------- TEAMS (league pyramid) ---------- */
+  .division{margin-bottom:56px;}
+  .division-head{
+    display:flex; align-items:baseline; gap:14px; margin-bottom:20px;
+    border-bottom:2px solid var(--gold); padding-bottom:10px;
+  }
+  .division-head h3{font-size:22px;}
+  .division-head span{font-family:'Space Mono',monospace; font-size:11px; color:var(--grey); text-transform:uppercase;}
+  .team-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;}
+  .team-card{
+    border:1px solid var(--line); padding:18px; background:var(--ink-2);
+    transition:border-color .15s;
+  }
+  .team-card:hover{border-color:var(--gold);}
+  .team-card h4{font-family:'Anton',sans-serif; font-size:19px; letter-spacing:0.4px; margin-bottom:8px;}
+  .team-card .league{font-family:'Space Mono',monospace; font-size:10px; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; display:block;}
+  .team-card ul{list-style:none;}
+  .team-card li{font-size:13px; color:var(--grey); margin-bottom:3px;}
+  .team-card li b{color:var(--paper); font-weight:600;}
+
+  /* ---------- COACHES ---------- */
+  .coach-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px;}
+  .coach-card{border:1px solid var(--line); padding:20px; text-align:left; background:var(--ink-2);}
+  .coach-avatar{
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dim));
+    color:var(--ink); font-family:'Anton',sans-serif; font-size:20px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:14px;
+  }
+  .coach-card h4{font-size:16px; font-family:'Inter',sans-serif; font-weight:700; margin-bottom:4px;}
+  .coach-card p{font-size:12px; color:var(--grey);}
+
+  /* ---------- PHOTOS ---------- */
+  .photo-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .photo-grid > *{aspect-ratio:1/1; overflow:hidden; background:var(--ink-2); border:1px solid var(--line);}
+  .photo-grid img{width:100%; height:100%; object-fit:cover;}
+  .photo-grid .ph-large{grid-column:span 2; grid-row:span 2; aspect-ratio:auto;}
+  .photo-placeholder{
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Mono',monospace; font-size:11px; color:var(--grey); text-transform:uppercase; text-align:center; padding:10px;
+  }
+  @media (max-width:640px){
+    .photo-grid{grid-template-columns:repeat(2,1fr);}
+    .ph-large{grid-column:span 2;}
+  }
+
+  /* ---------- EVENTS ---------- */
+  .event-row{
+    display:flex; gap:24px; padding:24px 0; border-bottom:1px solid var(--line);
+    align-items:flex-start;
+  }
+  .event-date{
+    font-family:'Anton',sans-serif; text-align:center; min-width:70px; color:var(--gold);
+  }
+  .event-date .d{font-size:30px; line-height:1;}
+  .event-date .m{font-family:'Space Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--grey); text-transform:uppercase;}
+  .event-body h4{font-size:17px; margin-bottom:6px; font-family:'Inter',sans-serif; font-weight:700;}
+  .event-body p{font-size:13px; color:var(--grey);}
+
+  footer{
+    border-top:1px solid var(--line); padding:48px 24px 32px; text-align:center;
+  }
+  footer .brand{justify-content:center; margin-bottom:16px;}
+  footer p{font-size:12px; color:var(--grey);}
+  footer .foot-links{margin-top:14px; display:flex; gap:18px; justify-content:center; font-family:'Space Mono',monospace; font-size:11px; text-transform:uppercase;}
+  footer .foot-links a:hover{color:var(--gold);}
+
+  .placeholder-banner{
+    background:var(--gold); color:var(--ink); font-family:'Space Mono',monospace;
+    font-size:12px; text-align:center; padding:8px 16px; letter-spacing:0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="placeholder-banner">SITE PREVIEW — fixtures, events &amp; some photos below are placeholders. Swap in real content before launch.</div>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <img src="assets/crest.png" alt="St James' Swifts FC crest">
+      <span>St James' Swifts</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <nav class="links" id="navLinks">
+      <a href="#fixtures">Fixtures</a>
+      <a href="#teams">Teams</a>
+      <a href="#photos">Photos</a>
+      <a href="#coaches">Coaches</a>
+      <a href="#events">Events</a>
+    </nav>
+  </div>
+</header>
+
+<div id="top" class="hero">
+  <img class="hero-crest" src="assets/crest.png" alt="St James' Swifts FC crest">
+  <h1><small>Est. Belfast</small>Swifts</h1>
+  <p class="tag">Twenty teams. One club. From Mini Swifts to the National Conference — St James' Swifts FC, Belfast.</p>
+  <div class="cta-row">
+    <a class="btn btn-solid" href="#fixtures">Latest Results</a>
+    <a class="btn btn-outline" href="#teams">Our Teams</a>
+  </div>
+</div>
+
+<div class="ticker-band">
+  <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
+</div>
+
+<main class="wrap">
+
+  <section id="fixtures">
+    <div class="head">
+      <span class="eyebrow">Matchday</span>
+      <h2>Fixtures &amp; Results</h2>
+      <p>The latest from across the club — first team down to the youth ranks.</p>
+    </div>
+
+    <div id="fixtureList"></div>
+    <p class="fixture-note">PLACEHOLDER DATA — connect a results feed or update these manually once real fixtures are confirmed.</p>
+  </section>
+
+  <hr class="divider">
+
+  <section id="teams">
+    <div class="head">
+      <span class="eyebrow">The Club</span>
+      <h2>Teams</h2>
+      <p>St James' Swifts run sides from Mini Swifts right through to First Team senior football.</p>
+    </div>
+    <div id="divisions"></div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="photos">
+    <div class="head">
+      <span class="eyebrow">Gallery</span>
+      <h2>Photos</h2>
+      <p>Moments from around the club.</p>
+    </div>
+    <div class="photo-grid">
+      <div class="ph-large"><img src="assets/champions.jpg" alt="St James' Swifts 1st Team celebrating a title win"></div>
+      <div class="photo-placeholder">Add photo</div>
+      <div class="photo-placeholder">Add photo</div>
+      <div class="photo-placeholder">Add photo</div>
+      <div class="photo-placeholder">Add photo</div>
+      <div class="photo-placeholder">Add photo</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="coaches">
+    <div class="head">
+      <span class="eyebrow">Behind The Team</span>
+      <h2>Coaches &amp; Managers</h2>
+      <p>The people running training, picking teams and driving minibuses every week.</p>
+    </div>
+    <div class="coach-grid" id="coachGrid"></div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="events">
+    <div class="head">
+      <span class="eyebrow">What's On</span>
+      <h2>Club Events</h2>
+      <p>Upcoming dates for the diary.</p>
+    </div>
+    <div id="eventList"></div>
+    <p class="fixture-note">PLACEHOLDER DATES — replace with confirmed club events.</p>
+  </section>
+
+</main>
+
+<footer>
+  <a class="brand" href="#top">
+    <img src="assets/crest.png" alt="St James' Swifts FC crest" style="width:34px;height:34px;border-radius:50%;">
+    <span style="font-family:'Anton',sans-serif; font-size:16px;">St James' Swifts FC</span>
+  </a>
+  <p>Belfast, Northern Ireland</p>
+  <div class="foot-links">
+    <a href="#fixtures">Fixtures</a>
+    <a href="#teams">Teams</a>
+    <a href="#photos">Photos</a>
+    <a href="#coaches">Coaches</a>
+    <a href="#events">Events</a>
+  </div>
+</footer>
+
+<script>
+  // nav toggle
+  document.getElementById('navToggle').addEventListener('click', ()=>{
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+
+  // ---------- DATA ----------
+  const divisions = [
+    {
+      name:"Seniors",
+      note:"Adult football",
+      teams:[
+        {name:"1st Team", league:"National Conference", people:[["Manager","Eamon McCarthy"],["Coach","Dermot McVeigh"],["Goalkeeper Coach","Ciaran Stitt"]]},
+        {name:"Reserves", league:"BPIL Division 2", people:[["Manager","David O'Neill"],["Coach","Patrick McCann"]]},
+        {name:"Strollers", league:"BDFL", people:[["Manager","Daniel Ryder"],["Coach","Gerald Tate"],["Coach","Kevin McCloskey"]]},
+      ]
+    },
+    {
+      name:"Youth — SBYL",
+      note:"Sub-Belfast Youth League",
+      teams:[
+        {name:"2009s", league:"SBYL", people:[["Manager","Jack Morris"]]},
+        {name:"2010s", league:"SBYL", people:[["Manager","Patrick Brophy"]]},
+        {name:"2012s", league:"SBYL", people:[["Manager","Joe Diver"]]},
+        {name:"2013s", league:"SBYL", people:[["Manager","Daniel Walsh"],["Coach","Kevin Williamson"]]},
+        {name:"2013 Colts", league:"SBYL", people:[["Manager","Daniel Walsh"]]},
+        {name:"2014s", league:"SBYL", people:[["Manager","Brendan Dornan"]]},
+        {name:"2014 Colts", league:"SBYL", people:[["Manager","Sean Austin"]]},
+        {name:"2014 Development", league:"SBYL", people:[["Manager","TBC"]]},
+        {name:"2015s", league:"SBYL", people:[["Manager","Michael Hannaway"]]},
+        {name:"2015 Girls", league:"SBYL", people:[["Manager","TBC"]]},
+        {name:"2016s", league:"SBYL", people:[["Manager","TBC"]]},
+      ]
+    },
+    {
+      name:"Youth — Fonacab",
+      note:"Fonacab League",
+      teams:[
+        {name:"2017s", league:"Fonacab", people:[["Manager","Rabbie White"]]},
+        {name:"2018s", league:"Fonacab", people:[["Manager","Gerald Tate"]]},
+        {name:"2019s", league:"Fonacab", people:[["Manager","Daniel Murphy"],["Coach","Stephen McGivern"]]},
+        {name:"2020s", league:"Fonacab", people:[["Manager","Kevin McCloskey"]]},
+        {name:"2021s", league:"Fonacab", people:[["Manager","Mairtin McCashin"],["Coach","Paul Thompson"]]},
+      ]
+    },
+    {
+      name:"Mini Swifts",
+      note:"Winchester Coaching Academy",
+      teams:[
+        {name:"Mini Swifts", league:"Winchester Coaching Academy", people:[["Coach","Joe Diver"],["Coach","Jude Winchester"]]},
+      ]
+    }
+  ];
+
+  const divWrap = document.getElementById('divisions');
+  divisions.forEach(div=>{
+    const section = document.createElement('div');
+    section.className = 'division';
+    section.innerHTML = `
+      <div class="division-head">
+        <h3>${div.name}</h3>
+        <span>${div.note}</span>
+      </div>
+      <div class="team-grid">
+        ${div.teams.map(t=>`
+          <div class="team-card">
+            <h4>${t.name}</h4>
+            <span class="league">${t.league}</span>
+            <ul>${t.people.map(p=>`<li>${p[0]}: <b>${p[1]}</b></li>`).join('')}</ul>
+          </div>`).join('')}
+      </div>`;
+    divWrap.appendChild(section);
+  });
+
+  // ---------- COACHES (deduped) ----------
+  const coachMap = {};
+  divisions.forEach(div=>div.teams.forEach(t=>{
+    t.people.forEach(([role,name])=>{
+      if(name === "TBC") return;
+      if(!coachMap[name]) coachMap[name] = [];
+      coachMap[name].push(`${role}, ${t.name}`);
+    });
+  }));
+  const coachGrid = document.getElementById('coachGrid');
+  Object.entries(coachMap).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([name,roles])=>{
+    const initials = name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const card = document.createElement('div');
+    card.className = 'coach-card';
+    card.innerHTML = `
+      <div class="coach-avatar">${initials}</div>
+      <h4>${name}</h4>
+      <p>${roles.join(' &middot; ')}</p>`;
+    coachGrid.appendChild(card);
+  });
+
+  // ---------- FIXTURES (placeholder) ----------
+  const fixtures = [
+    {team:"1st Team", opp:"Dundela Reserves", date:"SAT 08 AUG · 15:00", home:true, status:"upcoming"},
+    {team:"1st Team", opp:"Ballymacash Rangers", date:"SAT 01 AUG", score:"3–1", result:"win"},
+    {team:"Reserves", opp:"Dergview Res.", date:"SAT 01 AUG", score:"1–1", result:"draw"},
+    {team:"2013s", opp:"Braniel YC", date:"SUN 09 AUG · 11:00", home:true, status:"upcoming"},
+    {team:"2017s", opp:"Malone United", date:"SAT 01 AUG", score:"4–2", result:"win"},
+    {team:"Strollers", opp:"Cregagh Strollers", date:"SUN 02 AUG · 12:30", home:false, status:"upcoming"},
+    {team:"2019s", opp:"Sydenham YC", date:"SAT 25 JUL", score:"0–2", result:"loss"},
+  ];
+
+  const fixtureList = document.getElementById('fixtureList');
+  fixtures.forEach(f=>{
+    const row = document.createElement('div');
+    row.className = 'fixture-card';
+    const isUpcoming = f.status === 'upcoming';
+    row.innerHTML = `
+      <div>
+        <div class="team us">${f.team}</div>
+        <div class="meta">${f.date}</div>
+      </div>
+      <div class="${isUpcoming ? 'score pending' : 'score'}">${isUpcoming ? 'vs' : f.score}</div>
+      <div>
+        <div class="team">${f.opp}</div>
+        <div class="meta">${isUpcoming ? (f.home ? 'Home' : 'Away') : 'Full Time'}</div>
+      </div>
+      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? 'Upcoming' : f.result}</div>
+    `;
+    fixtureList.appendChild(row);
+  });
+
+  // ticker uses same data
+  const results = fixtures.filter(f=>f.status!=='upcoming');
+  const tickerHtml = results.map(f=>`<span class="tick">${f.team} <span class="res">${f.score}</span> ${f.opp}</span>`).join('');
+  document.getElementById('tickerTrack').innerHTML = tickerHtml + tickerHtml; // doubled for seamless loop
+
+  // ---------- EVENTS (placeholder) ----------
+  const events = [
+    {d:"09", m:"AUG", title:"Pre-Season Friendly — 1st Team vs Dunmurry Rec.", desc:"Home fixture, Grosvenor Playing Fields, kick-off 3pm."},
+    {d:"16", m:"AUG", title:"Season Opener — All Youth Teams", desc:"Full club fixture list live across SBYL and Fonacab age groups."},
+    {d:"30", m:"AUG", title:"Mini Swifts Open Day", desc:"New sign-ups welcome, ages 4–7, Winchester Coaching Academy session."},
+    {d:"12", m:"SEP", title:"Club Presentation Night", desc:"Venue TBC — end of season awards carried over, details to follow."},
+  ];
+  const eventList = document.getElementById('eventList');
+  events.forEach(e=>{
+    const row = document.createElement('div');
+    row.className = 'event-row';
+    row.innerHTML = `
+      <div class="event-date"><div class="d">${e.d}</div><div class="m">${e.m}</div></div>
+      <div class="event-body"><h4>${e.title}</h4><p>${e.desc}</p></div>
+    `;
+    eventList.appendChild(row);
+  });
+</script>
+
+</body>
+</html>
