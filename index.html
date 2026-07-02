@@ -296,7 +296,7 @@
     </div>
 
     <div id="fixtureList"></div>
-    <p class="fixture-note">PLACEHOLDER DATA — connect a results feed or update these manually once real fixtures are confirmed.</p>
+    <p class="fixture-note">Pre-season fixtures — Ladies fixtures to be added.</p>
   </section>
 
   <hr class="divider">
@@ -383,34 +383,34 @@
         {name:"1st Team", league:"National Conference", people:[["Manager","Eamon McCarthy"],["Coach","Dermot McVeigh"],["Goalkeeper Coach","Ciaran Stitt"]]},
         {name:"Reserves", league:"BPIL Division 2", people:[["Manager","David O'Neill"],["Coach","Patrick McCann"]]},
         {name:"Strollers", league:"BDFL", people:[["Manager","Daniel Ryder"],["Coach","Gerald Tate"],["Coach","Kevin McCloskey"]]},
+        {name:"Ladies", league:"Seniors", people:[["Coach","David O'Neill"]]},
       ]
     },
     {
       name:"Youth — SBYL",
-      note:"Sub-Belfast Youth League",
+      note:"South Belfast Youth League",
       teams:[
-        {name:"2009s", league:"SBYL", people:[["Manager","Jack Morris"]]},
-        {name:"2010s", league:"SBYL", people:[["Manager","Patrick Brophy"]]},
-        {name:"2012s", league:"SBYL", people:[["Manager","Joe Diver"]]},
-        {name:"2013s", league:"SBYL", people:[["Manager","Daniel Walsh"],["Coach","Kevin Williamson"]]},
-        {name:"2013 Colts", league:"SBYL", people:[["Manager","Daniel Walsh"]]},
-        {name:"2014s", league:"SBYL", people:[["Manager","Brendan Dornan"]]},
-        {name:"2014 Colts", league:"SBYL", people:[["Manager","Sean Austin"]]},
-        {name:"2014 Development", league:"SBYL", people:[["Manager","TBC"]]},
-        {name:"2015s", league:"SBYL", people:[["Manager","Michael Hannaway"]]},
-        {name:"2015 Girls", league:"SBYL", people:[["Manager","TBC"]]},
-        {name:"2016s", league:"SBYL", people:[["Manager","TBC"]]},
+        {name:"2009s", league:"SBYL", people:[["Coach","Jack Morris"],["Coach","Sean Hughes"]]},
+        {name:"2010s", league:"SBYL", people:[["Coach","Pocky Brophy"]]},
+        {name:"2012s", league:"SBYL", people:[["Coach","Joe Diver"]]},
+        {name:"2013s", league:"SBYL", people:[["Coach","Caomhin Williamson"],["Coach","Dan Walsh Snr"]]},
+        {name:"2013 Colts", league:"SBYL", people:[["Coach","Dan Walsh Snr"],["Coach","Dan Walsh Jnr"]]},
+        {name:"2014s", league:"SBYL", people:[["Coach","Brendan Dornan"]]},
+        {name:"2014 Colts", league:"SBYL", people:[["Coach","Sean Rooney"],["Coach","Sean Austin"]]},
+        {name:"2014 Development", league:"SBYL", people:[["Coach","Michael Flannery"],["Coach","Stephen Doyle"],["Coach","Sean Hanna"]]},
+        {name:"2015s", league:"SBYL", people:[["Coach","Michael Hannaway"]]},
+        {name:"2015 Girls", league:"SBYL", people:[["Coach","TBC"]]},
+        {name:"2016s", league:"SBYL", people:[["Coach","TBC"]]},
       ]
     },
     {
       name:"Youth — Fonacab",
       note:"Fonacab League",
       teams:[
-        {name:"2017s", league:"Fonacab", people:[["Manager","Rabbie White"]]},
-        {name:"2018s", league:"Fonacab", people:[["Manager","Gerald Tate"]]},
-        {name:"2019s", league:"Fonacab", people:[["Manager","Daniel Murphy"],["Coach","Stephen McGivern"]]},
-        {name:"2020s", league:"Fonacab", people:[["Manager","Kevin McCloskey"]]},
-        {name:"2021s", league:"Fonacab", people:[["Manager","Mairtin McCashin"],["Coach","Paul Thompson"]]},
+        {name:"2017s", league:"Fonacab", people:[["Coach","Jordan Savage"],["Coach","Robbie White"],["Coach","Michael Wilis"]]},
+        {name:"2018s", league:"Fonacab", people:[["Coach","Gerald Tate"],["Coach","Margaret Tate"]]},
+        {name:"2019s", league:"Fonacab", people:[["Coach","Stephen McGivern"],["Coach","Daniel Murphy"],["Coach","Kerri McDonagh"]]},
+        {name:"2020s / 2021s", league:"Fonacab", people:[["Coach","Mairtin McCashin"],["Coach","Kevin Barry McCluskey"],["Coach","Paul Thompson"],["Coach","Paul Rooney"]]},
       ]
     },
     {
@@ -463,15 +463,12 @@
     coachGrid.appendChild(card);
   });
 
-  // ---------- FIXTURES (placeholder) ----------
+  // ---------- FIXTURES ----------
   const fixtures = [
-    {team:"1st Team", opp:"Dundela Reserves", date:"SAT 08 AUG · 15:00", home:true, status:"upcoming"},
-    {team:"1st Team", opp:"Ballymacash Rangers", date:"SAT 01 AUG", score:"3–1", result:"win"},
-    {team:"Reserves", opp:"Dergview Res.", date:"SAT 01 AUG", score:"1–1", result:"draw"},
-    {team:"2013s", opp:"Braniel YC", date:"SUN 09 AUG · 11:00", home:true, status:"upcoming"},
-    {team:"2017s", opp:"Malone United", date:"SAT 01 AUG", score:"4–2", result:"win"},
-    {team:"Strollers", opp:"Cregagh Strollers", date:"SUN 02 AUG · 12:30", home:false, status:"upcoming"},
-    {team:"2019s", opp:"Sydenham YC", date:"SAT 25 JUL", score:"0–2", result:"loss"},
+    {team:"1st Team", opp:"Desertmartin", date:"SAT 11 JUL · 2PM KO", venue:"Dromore Road", status:"upcoming"},
+    {team:"1st Team", opp:"Ards Rangers", date:"SAT 18 JUL · 2PM KO", venue:"Drome Park", status:"upcoming"},
+    {team:"1st Team", opp:"Albert Foundry", date:"TUE 21 JUL · 7PM KO", venue:"Paisley Park", status:"upcoming"},
+    {team:"1st Team", opp:"Warrenpoint Town", date:"SAT 25 JUL · 2PM KO", venue:"Milltown", status:"upcoming"},
   ];
 
   const fixtureList = document.getElementById('fixtureList');
@@ -487,16 +484,21 @@
       <div class="${isUpcoming ? 'score pending' : 'score'}">${isUpcoming ? 'vs' : f.score}</div>
       <div>
         <div class="team">${f.opp}</div>
-        <div class="meta">${isUpcoming ? (f.home ? 'Home' : 'Away') : 'Full Time'}</div>
+        <div class="meta">${isUpcoming ? f.venue : 'Full Time'}</div>
       </div>
-      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? 'Upcoming' : f.result}</div>
+      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? 'Pre-Season' : f.result}</div>
     `;
     fixtureList.appendChild(row);
   });
 
-  // ticker uses same data
+  // ticker shows upcoming fixtures until results come in
   const results = fixtures.filter(f=>f.status!=='upcoming');
-  const tickerHtml = results.map(f=>`<span class="tick">${f.team} <span class="res">${f.score}</span> ${f.opp}</span>`).join('');
+  const tickSource = results.length ? results : fixtures;
+  const tickerHtml = tickSource.map(f=>
+    f.status==='upcoming'
+      ? `<span class="tick">${f.team} vs ${f.opp} <span class="res">${f.date}</span></span>`
+      : `<span class="tick">${f.team} <span class="res">${f.score}</span> ${f.opp}</span>`
+  ).join('');
   document.getElementById('tickerTrack').innerHTML = tickerHtml + tickerHtml; // doubled for seamless loop
 
   // ---------- EVENTS (placeholder) ----------
