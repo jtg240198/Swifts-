@@ -68,10 +68,10 @@
     nav.links{
       position:absolute; top:100%; left:0; right:0;
       background:var(--ink); flex-direction:column; gap:0;
-      max-height:0; overflow:hidden; transition:max-height .25s ease;
+      max-height:0; overflow-y:auto; transition:max-height .25s ease;
       border-bottom:1px solid var(--line);
     }
-    nav.links.open{max-height:320px;}
+    nav.links.open{max-height:80vh;}
     nav.links a{padding:16px 24px; border-top:1px solid var(--line);}
     .nav-toggle{display:block;}
   }
