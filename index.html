@@ -739,8 +739,8 @@
   function closeTeamView(){
     overlay.classList.remove('open');
     document.body.style.overflow = '';
-    if(location.hash.startsWith('#squad-') || location.hash.startsWith('#photos-')){
-      history.replaceState(null,'','#teams');
+    if(location.hash.startsWith('#squad-') || location.hash.startsWith('#photos-') || location.hash === '#all-fixtures'){
+      history.replaceState(null,'','#fixtures');
     }
   }
 
@@ -869,21 +869,53 @@
   const upcoming = fixtures.filter(f=>!isPast(f)).sort((a,b)=> a.iso<b.iso?-1:1);
   const played = fixtures.filter(f=>isPast(f)).sort((a,b)=> a.iso>b.iso?-1:1);
 
-  // render upcoming, grouped
+  // render upcoming: landing page shows only the next few, full list in overlay
+  const SHOW_ON_LANDING = 6;
   const fixtureList = document.getElementById('fixtureList');
   const groupOrder = ["Pre-Season","League"];
-  let anyUpcoming = false;
-  groupOrder.forEach(g=>{
-    const inGroup = upcoming.filter(f=>f.group===g);
-    if(!inGroup.length) return;
-    anyUpcoming = true;
+
+  if(upcoming.length){
+    const next = upcoming.slice(0, SHOW_ON_LANDING);
     const h = document.createElement('h3');
     h.className = 'fixture-group-head';
-    h.textContent = g;
+    h.textContent = 'Next Up';
     fixtureList.appendChild(h);
-    inGroup.forEach(f=> fixtureList.insertAdjacentHTML('beforeend', fixtureCard(f, false)));
-  });
-  if(!anyUpcoming) fixtureList.innerHTML = '<div class="squad-empty">No upcoming fixtures right now.</div>';
+    next.forEach(f=> fixtureList.insertAdjacentHTML('beforeend', fixtureCard(f, false)));
+    if(upcoming.length > SHOW_ON_LANDING){
+      fixtureList.insertAdjacentHTML('beforeend',
+        `<button class="btn btn-outline" id="allFixturesBtn" style="margin-top:16px; cursor:pointer; background:none; width:100%;">View All Fixtures (${upcoming.length})</button>`);
+    }
+  } else {
+    fixtureList.innerHTML = '<div class="squad-empty">No upcoming fixtures right now.</div>';
+  }
+
+  function renderAllFixtures(container){
+    groupOrder.forEach(g=>{
+      const inGroup = upcoming.filter(f=>f.group===g);
+      if(!inGroup.length) return;
+      const h = document.createElement('h3');
+      h.className = 'fixture-group-head';
+      h.textContent = g;
+      container.appendChild(h);
+      inGroup.forEach(f=> container.insertAdjacentHTML('beforeend', fixtureCard(f, false)));
+    });
+  }
+
+  const allFixBtn = document.getElementById('allFixturesBtn');
+  if(allFixBtn){
+    allFixBtn.addEventListener('click', ()=>{
+      squadEyebrow.textContent = 'Season';
+      squadTitle.textContent = 'All Fixtures';
+      squadSub.textContent = 'Every upcoming game across the club';
+      squadBody.innerHTML = '';
+      renderAllFixtures(squadBody);
+      overlay.classList.add('open');
+      overlay.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+      location.hash = 'all-fixtures';
+    });
+    if(location.hash === '#all-fixtures') allFixBtn.click();
+  }
 
   // render results
   const resultsList = document.getElementById('resultsList');
