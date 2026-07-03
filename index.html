@@ -362,7 +362,9 @@
       <a href="#results">Results</a>
       <a href="#teams">Teams</a>
       <a href="#coaches">Coaches</a>
-      <a href="#events">Events</a>
+      <a href="#committee">Committee</a>
+      <a href="#sponsors">Sponsors</a>
+      <a href="#events">Events &amp; Fundraising</a>
     </nav>
   </div>
 </header>
@@ -424,14 +426,28 @@
       <p>St James' Swifts run sides from Mini Swifts right through to First Team senior football.</p>
     </div>
     <div id="divisions"></div>
+  </section>
 
-    <div class="division" style="margin-top:56px;">
-      <div class="division-head">
-        <h3>Committee</h3>
-        <span>Off the pitch</span>
-      </div>
-      <div class="coach-grid" id="committeeGrid"></div>
+  <hr class="divider">
+
+  <section id="committee">
+    <div class="head">
+      <span class="eyebrow">Off The Pitch</span>
+      <h2>Committee</h2>
+      <p>The people who keep St James' Swifts running.</p>
     </div>
+    <div class="coach-grid" id="committeeGrid"></div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="sponsors">
+    <div class="head">
+      <span class="eyebrow">Thank You</span>
+      <h2>Sponsors</h2>
+      <p>The local businesses backing every team at the club.</p>
+    </div>
+    <div class="team-grid" id="sponsorGrid"></div>
   </section>
 
   <hr class="divider">
@@ -450,11 +466,10 @@
   <section id="events">
     <div class="head">
       <span class="eyebrow">What's On</span>
-      <h2>Club Events</h2>
+      <h2>Events &amp; Fundraising</h2>
       <p>Upcoming dates for the diary.</p>
     </div>
     <div id="eventList"></div>
-    <p class="fixture-note">PLACEHOLDER DATES — replace with confirmed club events.</p>
   </section>
 
 </main>
@@ -494,6 +509,8 @@
     <a href="#results">Results</a>
     <a href="#teams">Teams</a>
     <a href="#coaches">Coaches</a>
+    <a href="#committee">Committee</a>
+    <a href="#sponsors">Sponsors</a>
     <a href="#events">Events</a>
   </div>
 </footer>
@@ -774,28 +791,28 @@
     {team:"1st Team", opp:"Albert Foundry", iso:"2026-07-21", time:"19:00", venue:"Paisley Park", home:false, group:"Pre-Season", tag:"Friendly"},
     {team:"1st Team", opp:"Warrenpoint Town", iso:"2026-07-25", time:"14:00", venue:"Milltown", home:false, group:"Pre-Season", tag:"Friendly"},
     // 1st Team — National Conference League 2026-27
-    {team:"1st Team", opp:"Ballyclare", iso:"2026-08-08", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Ballyclare", iso:"2026-08-08", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Dollingstown", iso:"2026-08-18", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Distillery", iso:"2026-08-22", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Distillery", iso:"2026-08-22", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Ballymacash", iso:"2026-09-15", home:false, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Knockbreda", iso:"2026-09-19", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Coagh Utd", iso:"2026-10-03", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Coagh Utd", iso:"2026-10-03", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Banbridge", iso:"2026-10-10", home:false, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Dergview", iso:"2026-10-27", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Oxford Sun", iso:"2026-10-31", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Oxford Sun", iso:"2026-10-31", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Portstewart", iso:"2026-11-07", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Ballymacash", iso:"2026-11-14", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Ballymacash", iso:"2026-11-14", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Coagh Utd", iso:"2026-11-28", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Dollingstown", iso:"2026-12-05", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dollingstown", iso:"2026-12-05", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Ballyclare", iso:"2026-12-12", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Banbridge", iso:"2026-12-19", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Banbridge", iso:"2026-12-19", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Oxford Sun", iso:"2026-12-26", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Rosario", iso:"2027-01-09", home:true, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Dergview", iso:"2027-01-16", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Rosario", iso:"2027-01-09", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dergview", iso:"2027-01-16", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Rosario", iso:"2027-01-23", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Portstewart", iso:"2027-01-30", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Portstewart", iso:"2027-01-30", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     {team:"1st Team", opp:"Distillery", iso:"2027-02-06", home:false, group:"League", tag:"NCL"},
-    {team:"1st Team", opp:"Knockbreda", iso:"2027-02-20", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Knockbreda", iso:"2027-02-20", venue:"Donegal Celtic Park", home:true, group:"League", tag:"NCL"},
     // Ladies — NIWFA Championship 2026
     {team:"Ladies", opp:"Sion Swifts Ladies", iso:"2026-07-10", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
     {team:"Ladies", opp:"Ballyclare Comrades Ladies", iso:"2026-07-22", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
@@ -904,10 +921,9 @@
 
   // ---------- EVENTS (placeholder) ----------
   const events = [
-    {d:"09", m:"AUG", title:"Pre-Season Friendly — 1st Team vs Dunmurry Rec.", desc:"Home fixture, Grosvenor Playing Fields, kick-off 3pm."},
-    {d:"16", m:"AUG", title:"Season Opener — All Youth Teams", desc:"Full club fixture list live across SBYL and Fonacab age groups."},
-    {d:"30", m:"AUG", title:"Mini Swifts Open Day", desc:"New sign-ups welcome, ages 4–7, Winchester Coaching Academy session."},
-    {d:"12", m:"SEP", title:"Club Presentation Night", desc:"Venue TBC — end of season awards carried over, details to follow."},
+    {d:"05", m:"JUL", title:"Mini Swifts Returns", desc:"Sunday 5th July, 10am at Conway Mill. Ages 2–5, boys & girls — new full-time coaches with JD Coaching and Winchester Coaching Academy. Join the Swifts family!", img:"assets/photos/mini-swifts-event.jpg"},
+    {d:"08", m:"AUG", title:"1st Team — NCL Opening Game", desc:"National Conference League season opener. Saturday 8th August, 3pm kick-off, Donegal Celtic Park."},
+    {d:"18", m:"AUG", title:"Juvenile Training Recommences", desc:"Tuesday 18th August, 6pm at Coláiste Feirste. All youth age groups back for the new season."},
   ];
   const eventList = document.getElementById('eventList');
   events.forEach(e=>{
@@ -915,9 +931,30 @@
     row.className = 'event-row';
     row.innerHTML = `
       <div class="event-date"><div class="d">${e.d}</div><div class="m">${e.m}</div></div>
-      <div class="event-body"><h4>${e.title}</h4><p>${e.desc}</p></div>
+      <div class="event-body"><h4>${e.title}</h4><p>${e.desc}</p>${e.img ? `<img src="${e.img}" alt="${e.title}" style="margin-top:14px; max-width:340px; width:100%; border:1px solid var(--line);" loading="lazy">` : ''}</div>
     `;
     eventList.appendChild(row);
+  });
+
+  // ---------- SPONSORS ----------
+  // Edit freely: {name, note (optional team/kit sponsored), url (optional)}
+  const sponsors = [
+    {name:"City Tours Belfast", note:"1st Team"},
+    {name:"Specsavers — Park Centre", note:"Youth"},
+    {name:"Fosters Tyre Services", note:"Youth"},
+    {name:"Mallon Brothers Funeral Directors", note:"Girls"},
+    {name:"SM Joinery", note:"Mini Swifts"},
+    {name:"Aldo's", note:"Football for All"},
+    {name:"The Little Bistro", note:"Youth"},
+    {name:"Theresa Dunlop Properties", note:"Club"},
+    {name:"Big G's Competitions", note:"Club"},
+  ];
+  const sponsorGrid = document.getElementById('sponsorGrid');
+  sponsors.forEach(s=>{
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    card.innerHTML = `<h4>${s.name}</h4>${s.note ? `<span class="league">${s.note}</span>` : ''}`;
+    sponsorGrid.appendChild(card);
   });
 </script>
 
