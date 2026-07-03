@@ -154,6 +154,18 @@
   }
   .tick .res{color:var(--gold); font-weight:700;}
 
+  /* ---------- SECTION ROUTING ---------- */
+  main .page-section{display:none;}
+  main .page-section.active{display:block;}
+  main hr.divider{display:none;}
+  #homeBlock.hidden{display:none;}
+  .back-home{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px;
+    color:var(--grey); margin-bottom:28px; cursor:pointer; background:none; border:none; padding:0;
+  }
+  .back-home:hover{color:var(--gold);}
+
   /* ---------- SECTION SHELL ---------- */
   section{padding:80px 0;}
   section .head{margin-bottom:44px; max-width:640px;}
@@ -376,6 +388,7 @@
   </div>
 </header>
 
+<div id="homeBlock">
 <div id="top" class="hero">
   <img class="hero-crest" src="assets/crest_gold.png" alt="St James' Swifts FC crest">
   <h1><small>Est. Belfast</small>Up The Swifts</h1>
@@ -399,10 +412,13 @@
 <div class="ticker-band">
   <div class="ticker-track" id="tickerTrack"><!-- filled by JS --></div>
 </div>
+</div>
 
 <main class="wrap">
+  <button class="back-home" id="backHomeBtn">&larr; Home</button>
 
-  <section id="fixtures">
+
+  <section id="fixtures" class="page-section">
     <div class="head">
       <span class="eyebrow">Matchday</span>
       <h2>Fixtures</h2>
@@ -415,7 +431,7 @@
 
   <hr class="divider">
 
-  <section id="results">
+  <section id="results" class="page-section">
     <div class="head">
       <span class="eyebrow">Full Time</span>
       <h2>Results</h2>
@@ -426,7 +442,7 @@
 
   <hr class="divider">
 
-  <section id="teams">
+  <section id="teams" class="page-section">
     <div class="head">
       <span class="eyebrow">The Club</span>
       <h2>Teams</h2>
@@ -437,7 +453,7 @@
 
   <hr class="divider">
 
-  <section id="committee">
+  <section id="committee" class="page-section">
     <div class="head">
       <span class="eyebrow">Off The Pitch</span>
       <h2>Committee</h2>
@@ -448,7 +464,7 @@
 
   <hr class="divider">
 
-  <section id="sponsors">
+  <section id="sponsors" class="page-section">
     <div class="head">
       <span class="eyebrow">Thank You</span>
       <h2>Sponsors</h2>
@@ -459,7 +475,7 @@
 
   <hr class="divider">
 
-  <section id="coaches">
+  <section id="coaches" class="page-section">
     <div class="head">
       <span class="eyebrow">Behind The Team</span>
       <h2>Coaches &amp; Managers</h2>
@@ -470,7 +486,7 @@
 
   <hr class="divider">
 
-  <section id="events">
+  <section id="events" class="page-section">
     <div class="head">
       <span class="eyebrow">What's On</span>
       <h2>Events &amp; Fundraising</h2>
@@ -481,7 +497,7 @@
 
   <hr class="divider">
 
-  <section id="news">
+  <section id="news" class="page-section">
     <div class="head">
       <span class="eyebrow">Latest</span>
       <h2>News</h2>
@@ -539,6 +555,45 @@
   document.getElementById('navToggle').addEventListener('click', ()=>{
     document.getElementById('navLinks').classList.toggle('open');
   });
+
+  // ---------- SECTION ROUTER ----------
+  // Landing page shows only the hero/ticker. Menu links load one section at a time.
+  const homeBlock = document.getElementById('homeBlock');
+  const ROUTABLE = ['fixtures','results','teams','coaches','committee','sponsors','events','news'];
+
+  function showRoute(hash){
+    const id = (hash || '').replace('#','');
+    document.getElementById('navLinks').classList.remove('open');
+    const backBtn = document.getElementById('backHomeBtn');
+    if(ROUTABLE.includes(id)){
+      document.querySelectorAll('main .page-section').forEach(s=>s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      homeBlock.classList.add('hidden');
+      backBtn.style.display = '';
+    } else {
+      document.querySelectorAll('main .page-section').forEach(s=>s.classList.remove('active'));
+      homeBlock.classList.remove('hidden');
+      backBtn.style.display = 'none';
+    }
+    window.scrollTo(0,0);
+  }
+
+  // any link pointing at a routable section (nav, footer, hero buttons) uses the router
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    const id = a.getAttribute('href').replace('#','');
+    if(ROUTABLE.includes(id) || id === 'top'){
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        history.pushState(null,'', a.getAttribute('href'));
+        showRoute(a.getAttribute('href'));
+      });
+    }
+  });
+  document.getElementById('backHomeBtn').addEventListener('click', ()=>{
+    history.pushState(null,'', '#top');
+    showRoute('#top');
+  });
+  window.addEventListener('popstate', ()=> showRoute(location.hash));
 
   // ---------- DATA ----------
   const divisions = [
@@ -773,10 +828,10 @@
   // deep-link support
   if(location.hash.startsWith('#squad-')){
     const t = decodeURIComponent(location.hash.replace('#squad-',''));
-    if(teamMeta[t]) openTeamView(t, 'squad');
+    if(teamMeta[t]){ showRoute('#teams'); openTeamView(t, 'squad'); }
   } else if(location.hash.startsWith('#photos-')){
     const t = decodeURIComponent(location.hash.replace('#photos-',''));
-    if(teamMeta[t]) openTeamView(t, 'photos');
+    if(teamMeta[t]){ showRoute('#teams'); openTeamView(t, 'photos'); }
   }
 
   // ---------- COACHES (deduped) ----------
@@ -1029,6 +1084,10 @@
     card.innerHTML = `<h4>${s.name}</h4>${s.note ? `<span class="league">${s.note}</span>` : ''}`;
     sponsorGrid.appendChild(card);
   });
+
+  // ---------- INITIAL ROUTE ----------
+  // Run last, once every section's content above has been built.
+  showRoute(location.hash);
 </script>
 
 </body>
