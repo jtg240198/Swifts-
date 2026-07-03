@@ -182,6 +182,11 @@
     .fixture-card{grid-template-columns:1fr auto; grid-template-rows:auto auto; row-gap:10px;}
     .fixture-card .tag{grid-column:2; grid-row:1;}
   }
+  .fixture-group-head{
+    font-family:'Space Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--gold); margin:26px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--line);
+  }
+  .fixture-group-head:first-child{margin-top:0;}
   .fixture-note{
     margin-top:20px; font-family:'Space Mono',monospace; font-size:12px; color:var(--grey);
     border-left:2px solid var(--gold); padding-left:12px;
@@ -206,6 +211,63 @@
   .team-card ul{list-style:none;}
   .team-card li{font-size:13px; color:var(--grey); margin-bottom:3px;}
   .team-card li b{color:var(--paper); font-weight:600;}
+  .card-actions{display:flex; gap:6px; margin-top:14px;}
+  .card-btn{
+    flex:1; text-align:center;
+    background:none; border:1px solid var(--gold); color:var(--gold);
+    font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase;
+    padding:9px 4px; cursor:pointer; transition:background .15s, color .15s; line-height:1.2;
+  }
+  .card-btn:hover{background:var(--gold); color:var(--ink);}
+  .card-btn.disabled{border-color:var(--line); color:var(--grey); cursor:default;}
+  .card-btn.disabled:hover{background:none; color:var(--grey);}
+
+  /* ---------- SQUAD OVERLAY ---------- */
+  .squad-overlay{
+    position:fixed; inset:0; z-index:100;
+    background:var(--ink); overflow-y:auto;
+    display:none; padding:0 0 60px;
+  }
+  .squad-overlay.open{display:block;}
+  .squad-topbar{
+    position:sticky; top:0; z-index:2;
+    background:rgba(12,12,13,0.94); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:16px; padding:16px 24px;
+  }
+  .squad-back{
+    background:none; border:1px solid var(--line); color:var(--paper);
+    font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px;
+    padding:8px 14px; cursor:pointer; transition:border-color .15s, color .15s;
+  }
+  .squad-back:hover{border-color:var(--gold); color:var(--gold);}
+  .squad-head{padding:44px 24px 24px; max-width:1160px; margin:0 auto;}
+  .squad-head .eyebrow{margin-bottom:8px; display:block;}
+  .squad-head h2{font-size:clamp(30px,6vw,48px); color:var(--gold);}
+  .squad-head .sub{color:var(--grey); font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-top:8px;}
+  .squad-body{max-width:1160px; margin:0 auto; padding:0 24px;}
+  .squad-group{margin-bottom:32px;}
+  .squad-group h3{font-size:16px; border-bottom:2px solid var(--gold); padding-bottom:8px; margin-bottom:14px;}
+  .squad-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px;}
+  .player{
+    display:flex; align-items:center; gap:12px;
+    border:1px solid var(--line); background:var(--ink-2); padding:12px 14px;
+  }
+  .player .num{
+    font-family:'Anton',sans-serif; font-size:18px; color:var(--gold);
+    min-width:26px; text-align:center;
+  }
+  .player .pname{font-size:14px; font-weight:600;}
+  .player .ppos{font-family:'Space Mono',monospace; font-size:10px; color:var(--grey); text-transform:uppercase;}
+  .squad-empty{
+    border:1px dashed var(--line); padding:40px 24px; text-align:center;
+    color:var(--grey); font-family:'Space Mono',monospace; font-size:13px;
+  }
+  .staff-line{color:var(--grey); font-size:13px; margin-top:4px;}
+  .staff-line b{color:var(--paper);}
+  .squad-gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .squad-gallery img{width:100%; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--line); background:var(--ink-2);}
+  @media (max-width:640px){ .squad-gallery{grid-template-columns:repeat(2,1fr);} }
 
   /* ---------- LEAGUE TABLES ---------- */
   .table-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;}
@@ -287,9 +349,8 @@
     <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     <nav class="links" id="navLinks">
       <a href="#fixtures">Fixtures</a>
-      <a href="#tables">Tables</a>
+      <a href="#results">Results</a>
       <a href="#teams">Teams</a>
-      <a href="#photos">Photos</a>
       <a href="#coaches">Coaches</a>
       <a href="#events">Events</a>
     </nav>
@@ -315,23 +376,23 @@
   <section id="fixtures">
     <div class="head">
       <span class="eyebrow">Matchday</span>
-      <h2>Fixtures &amp; Results</h2>
-      <p>The latest from across the club — first team down to the youth ranks.</p>
+      <h2>Fixtures</h2>
+      <p>Upcoming games across the club. Played matches move to Results automatically.</p>
     </div>
 
     <div id="fixtureList"></div>
-    <p class="fixture-note">1st Team pre-season friendlies · Ladies NIWFA Championship 2026.</p>
+    <p class="fixture-note">1st Team: pre-season friendlies &amp; National Conference League 2026-27 · Ladies: NIWFA Championship 2026.</p>
   </section>
 
   <hr class="divider">
 
-  <section id="tables">
+  <section id="results">
     <div class="head">
-      <span class="eyebrow">Standings</span>
-      <h2>League Tables</h2>
-      <p>Live tables on each league's official site — always up to date.</p>
+      <span class="eyebrow">Full Time</span>
+      <h2>Results</h2>
+      <p>How the club's been getting on.</p>
     </div>
-    <div class="table-grid" id="tableGrid"></div>
+    <div id="resultsList"></div>
   </section>
 
   <hr class="divider">
@@ -343,23 +404,13 @@
       <p>St James' Swifts run sides from Mini Swifts right through to First Team senior football.</p>
     </div>
     <div id="divisions"></div>
-  </section>
 
-  <hr class="divider">
-
-  <section id="photos">
-    <div class="head">
-      <span class="eyebrow">Gallery</span>
-      <h2>Photos</h2>
-      <p>Moments from around the club.</p>
-    </div>
-    <div class="photo-grid">
-      <div class="ph-large"><img src="assets/champions.jpg" alt="St James' Swifts 1st Team celebrating a title win"></div>
-      <div class="photo-placeholder">Add photo</div>
-      <div class="photo-placeholder">Add photo</div>
-      <div class="photo-placeholder">Add photo</div>
-      <div class="photo-placeholder">Add photo</div>
-      <div class="photo-placeholder">Add photo</div>
+    <div class="division" style="margin-top:56px;">
+      <div class="division-head">
+        <h3>Committee</h3>
+        <span>Off the pitch</span>
+      </div>
+      <div class="coach-grid" id="committeeGrid"></div>
     </div>
   </section>
 
@@ -388,6 +439,20 @@
 
 </main>
 
+<div class="squad-overlay" id="squadOverlay">
+  <div class="squad-topbar">
+    <button class="squad-back" id="squadBack">&larr; Back</button>
+    <img src="assets/crest_shield.png" alt="" style="width:26px;height:30px;object-fit:contain;">
+    <span style="font-family:'Anton',sans-serif;font-size:16px;">St James' Swifts</span>
+  </div>
+  <div class="squad-head">
+    <span class="eyebrow">Squad</span>
+    <h2 id="squadTitle"></h2>
+    <div class="sub" id="squadSub"></div>
+  </div>
+  <div class="squad-body" id="squadBody"></div>
+</div>
+
 <footer>
   <a class="brand" href="#top">
     <img src="assets/crest_shield.png" alt="St James' Swifts FC crest" style="width:32px;height:36px;object-fit:contain;">
@@ -396,9 +461,8 @@
   <p>Belfast, Northern Ireland</p>
   <div class="foot-links">
     <a href="#fixtures">Fixtures</a>
-    <a href="#tables">Tables</a>
+    <a href="#results">Results</a>
     <a href="#teams">Teams</a>
-    <a href="#photos">Photos</a>
     <a href="#coaches">Coaches</a>
     <a href="#events">Events</a>
   </div>
@@ -420,6 +484,7 @@
         {name:"Reserves", league:"BPIL Division 2", people:[["Manager","David O'Neill"],["Coach","Patrick McCann"]]},
         {name:"Strollers", league:"BDFL", people:[["Manager","Daniel Ryder"],["Coach","Gerald Tate"],["Coach","Kevin McCloskey"]]},
         {name:"Ladies", league:"NIWFA Championship", people:[["Coach","David O'Neill"]]},
+        {name:"Football for All", league:"Disability Football", people:[["Coach","Gerard Crossan"],["Coach","David Toner"]]},
       ]
     },
     {
@@ -457,6 +522,19 @@
     }
   ];
 
+  // League table URLs per team (add as you get them; missing = "Table soon")
+  const leagueUrls = {
+    "Ladies": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX0NPTVBFVElUSU9OLGlkPTQ2NDMzODAz"
+    // "1st Team": "https://...",
+    // "2013s": "https://...",
+  };
+
+  // Team photos: list image paths per team, e.g. ["assets/photos/1st-1.jpg", ...]
+  // Empty array = "Photos coming soon".
+  const teamPhotos = {
+    "1st Team": ["assets/champions.jpg"]
+  };
+
   const divWrap = document.getElementById('divisions');
   divisions.forEach(div=>{
     const section = document.createElement('div');
@@ -467,15 +545,115 @@
         <span>${div.note}</span>
       </div>
       <div class="team-grid">
-        ${div.teams.map(t=>`
+        ${div.teams.map((t,ti)=>`
           <div class="team-card">
             <h4>${t.name}</h4>
             <span class="league">${t.league}</span>
             <ul>${t.people.map(p=>`<li>${p[0]}: <b>${p[1]}</b></li>`).join('')}</ul>
+            <div class="card-actions">
+              ${leagueUrls[t.name]
+                ? `<a class="card-btn" href="${leagueUrls[t.name]}" target="_blank" rel="noopener">League Table</a>`
+                : `<span class="card-btn disabled">Table soon</span>`}
+              <button class="card-btn squad-btn" data-team="${t.name}">Squad</button>
+              <button class="card-btn photos-btn" data-team="${t.name}">Photos</button>
+            </div>
           </div>`).join('')}
       </div>`;
     divWrap.appendChild(section);
   });
+
+  // ---------- SQUADS ----------
+  // Fill each team's players here. Format: {num, name, pos}. pos optional.
+  // Leave the array empty [] to show a "squad coming soon" message.
+  const squads = {
+    "1st Team": [],
+    "Reserves": [],
+    "Strollers": [],
+    "Ladies": [],
+    "Football for All": [],
+    "2009s": [], "2010s": [], "2012s": [], "2013s": [], "2013 Colts": [],
+    "2014s": [], "2014 Colts": [], "2014 Development": [], "2015s": [], "2015 Girls": [],
+    "2017s": [], "2018s": [], "2019s": [], "2020s / 2021s": [], "Mini Swifts": []
+  };
+
+  // quick lookup of team meta (league + staff) by name
+  const teamMeta = {};
+  divisions.forEach(div=>div.teams.forEach(t=>{ teamMeta[t.name] = t; }));
+
+  const overlay = document.getElementById('squadOverlay');
+  const squadTitle = document.getElementById('squadTitle');
+  const squadSub = document.getElementById('squadSub');
+  const squadBody = document.getElementById('squadBody');
+  const squadEyebrow = overlay.querySelector('.squad-head .eyebrow');
+
+  function openTeamView(teamName, mode){
+    const meta = teamMeta[teamName];
+    squadTitle.textContent = teamName;
+    squadSub.textContent = meta ? meta.league : '';
+    squadEyebrow.textContent = mode === 'photos' ? 'Photos' : 'Squad';
+
+    let html = '';
+    if(mode === 'photos'){
+      const pics = teamPhotos[teamName] || [];
+      if(pics.length){
+        html += '<div class="squad-group"><div class="squad-gallery">';
+        pics.forEach(src=>{ html += `<img src="${src}" alt="${teamName} photo" loading="lazy">`; });
+        html += '</div></div>';
+      } else {
+        html += '<div class="squad-empty">Photos coming soon.</div>';
+      }
+    } else {
+      // staff
+      if(meta && meta.people.length){
+        html += '<div class="squad-group"><h3>Coaching Staff</h3>';
+        meta.people.forEach(p=>{ html += `<div class="staff-line">${p[0]}: <b>${p[1]}</b></div>`; });
+        html += '</div>';
+      }
+      // players
+      const players = squads[teamName] || [];
+      if(players.length){
+        html += '<div class="squad-group"><h3>Players</h3><div class="squad-list">';
+        players.forEach(pl=>{
+          html += `<div class="player">
+            <span class="num">${pl.num || ''}</span>
+            <div><div class="pname">${pl.name}</div>${pl.pos ? `<div class="ppos">${pl.pos}</div>` : ''}</div>
+          </div>`;
+        });
+        html += '</div></div>';
+      } else {
+        html += '<div class="squad-empty">Squad list coming soon.</div>';
+      }
+    }
+    squadBody.innerHTML = html;
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+    location.hash = (mode === 'photos' ? 'photos-' : 'squad-') + encodeURIComponent(teamName);
+  }
+
+  function closeTeamView(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if(location.hash.startsWith('#squad-') || location.hash.startsWith('#photos-')){
+      history.replaceState(null,'','#teams');
+    }
+  }
+
+  document.querySelectorAll('.squad-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> openTeamView(btn.dataset.team, 'squad'));
+  });
+  document.querySelectorAll('.photos-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> openTeamView(btn.dataset.team, 'photos'));
+  });
+  document.getElementById('squadBack').addEventListener('click', closeTeamView);
+  // deep-link support
+  if(location.hash.startsWith('#squad-')){
+    const t = decodeURIComponent(location.hash.replace('#squad-',''));
+    if(teamMeta[t]) openTeamView(t, 'squad');
+  } else if(location.hash.startsWith('#photos-')){
+    const t = decodeURIComponent(location.hash.replace('#photos-',''));
+    if(teamMeta[t]) openTeamView(t, 'photos');
+  }
 
   // ---------- COACHES (deduped) ----------
   const coachMap = {};
@@ -499,92 +677,141 @@
   });
 
   // ---------- FIXTURES ----------
+  // iso date + optional time. group: "Pre-Season" or "League". tag = short comp label.
+  // Add score:"2-1" once played; past-dated games auto-move to Results.
   const fixtures = [
-    {team:"1st Team", opp:"Desertmartin", date:"SAT 11 JUL · 2PM KO", venue:"Dromore Road", home:false, status:"upcoming"},
-    {team:"1st Team", opp:"Ards Rangers", date:"SAT 18 JUL · 2PM KO", venue:"Drome Park", home:false, status:"upcoming"},
-    {team:"1st Team", opp:"Albert Foundry", date:"TUE 21 JUL · 7PM KO", venue:"Paisley Park", home:false, status:"upcoming"},
-    {team:"1st Team", opp:"Warrenpoint Town", date:"SAT 25 JUL · 2PM KO", venue:"Milltown", home:false, status:"upcoming"},
-    {team:"Ladies", opp:"Sion Swifts Ladies", date:"FRI 10 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballyclare Comrades Ladies", date:"WED 22 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballymoney United Ladies", date:"WED 29 JUL · 7:45PM KO", venue:"Paddy's Park", home:false, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Strabane Athletic Ladies", date:"WED 05 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Bangor FC Ladies", date:"WED 12 AUG · 7:45PM KO", venue:"Clandeboye Park", home:false, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballymena United Women", date:"WED 19 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Craigavon City Ladies", date:"FRI 28 AUG · 7:45PM KO", venue:"Drumgor Road", home:false, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Greenisland Women", date:"WED 02 SEP · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Sion Swifts Ladies", date:"WED 09 SEP · 7:45PM KO", venue:"Melvin 3G", home:false, status:"upcoming", comp:"NIWFA"},
+    // 1st Team pre-season friendlies
+    {team:"1st Team", opp:"Desertmartin", iso:"2026-07-11", time:"14:00", venue:"Dromore Road", home:false, group:"Pre-Season", tag:"Friendly"},
+    {team:"1st Team", opp:"Ards Rangers", iso:"2026-07-18", time:"14:00", venue:"Drome Park", home:false, group:"Pre-Season", tag:"Friendly"},
+    {team:"1st Team", opp:"Albert Foundry", iso:"2026-07-21", time:"19:00", venue:"Paisley Park", home:false, group:"Pre-Season", tag:"Friendly"},
+    {team:"1st Team", opp:"Warrenpoint Town", iso:"2026-07-25", time:"14:00", venue:"Milltown", home:false, group:"Pre-Season", tag:"Friendly"},
+    // 1st Team — National Conference League 2026-27
+    {team:"1st Team", opp:"Ballyclare", iso:"2026-08-08", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dollingstown", iso:"2026-08-18", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Distillery", iso:"2026-08-22", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Ballymacash", iso:"2026-09-15", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Knockbreda", iso:"2026-09-19", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Coagh Utd", iso:"2026-10-03", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Banbridge", iso:"2026-10-10", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dergview", iso:"2026-10-27", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Oxford Sun", iso:"2026-10-31", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Portstewart", iso:"2026-11-07", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Ballymacash", iso:"2026-11-14", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Coagh Utd", iso:"2026-11-28", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dollingstown", iso:"2026-12-05", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Ballyclare", iso:"2026-12-12", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Banbridge", iso:"2026-12-19", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Oxford Sun", iso:"2026-12-26", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Rosario", iso:"2027-01-09", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Dergview", iso:"2027-01-16", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Rosario", iso:"2027-01-23", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Portstewart", iso:"2027-01-30", home:true, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Distillery", iso:"2027-02-06", home:false, group:"League", tag:"NCL"},
+    {team:"1st Team", opp:"Knockbreda", iso:"2027-02-20", home:true, group:"League", tag:"NCL"},
+    // Ladies — NIWFA Championship 2026
+    {team:"Ladies", opp:"Sion Swifts Ladies", iso:"2026-07-10", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Ballyclare Comrades Ladies", iso:"2026-07-22", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Ballymoney United Ladies", iso:"2026-07-29", time:"19:45", venue:"Paddy's Park", home:false, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Strabane Athletic Ladies", iso:"2026-08-05", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Bangor FC Ladies", iso:"2026-08-12", time:"19:45", venue:"Clandeboye Park", home:false, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Ballymena United Women", iso:"2026-08-19", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Craigavon City Ladies", iso:"2026-08-28", time:"19:45", venue:"Drumgor Road", home:false, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Greenisland Women", iso:"2026-09-02", time:"19:45", venue:"Whiterock Leisure Centre", home:true, group:"League", tag:"NIWFA"},
+    {team:"Ladies", opp:"Sion Swifts Ladies", iso:"2026-09-09", time:"19:45", venue:"Melvin 3G", home:false, group:"League", tag:"NIWFA"},
   ];
 
-  const fixtureList = document.getElementById('fixtureList');
+  const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const DAYS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+  function fmtDate(f){
+    const d = new Date(f.iso + "T00:00:00");
+    // default: any Saturday without a set time kicks off 3pm
+    let time = f.time;
+    if(!time && d.getDay() === 6) time = "15:00";
+    let s = `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+    if(time){
+      let [h,m] = time.split(':').map(Number);
+      const ap = h>=12 ? 'PM':'AM'; const h12 = ((h+11)%12)+1;
+      s += ` · ${h12}${m? ':'+String(m).padStart(2,'0'):''}${ap} KO`;
+    }
+    return s;
+  }
+  function isPast(f){
+    const d = new Date(f.iso + "T23:59:59");
+    return d < new Date();
+  }
+
   const oppBadge = (name)=>{
     const initials = name.split(' ').filter(w=>w[0]===w[0].toUpperCase()).map(w=>w[0]).slice(0,2).join('');
     return `<span class="badge-generic">${initials}</span>`;
   };
   const swiftsBadge = `<img class="badge-img" src="assets/crest_shield.png" alt="">`;
 
-  fixtures.forEach(f=>{
-    const row = document.createElement('div');
-    row.className = 'fixture-card';
-    const isUpcoming = f.status === 'upcoming';
-    // home team on the left
-    const swifts = `<div class="side"><div class="badge-slot">${swiftsBadge}</div><div><div class="team us">${f.team}</div><div class="meta">${f.date}</div></div></div>`;
-    const opp = `<div class="side"><div class="badge-slot">${oppBadge(f.opp)}</div><div><div class="team">${f.opp}</div><div class="meta">${isUpcoming ? f.venue : 'Full Time'}</div></div></div>`;
+  function fixtureCard(f, played){
+    const swifts = `<div class="side"><div class="badge-slot">${swiftsBadge}</div><div><div class="team us">${f.team}</div><div class="meta">${fmtDate(f)}</div></div></div>`;
+    const opp = `<div class="side"><div class="badge-slot">${oppBadge(f.opp)}</div><div><div class="team">${f.opp}</div><div class="meta">${played ? 'Full Time' : (f.venue || (f.home?'Home':'Away'))}</div></div></div>`;
     const left = f.home ? swifts : opp;
     const right = f.home ? opp : swifts;
-    row.innerHTML = `
+    const centre = played && f.score ? f.score : (played ? 'FT' : 'vs');
+    return `<div class="fixture-card">
       ${left}
-      <div class="${isUpcoming ? 'score pending' : 'score'}">${isUpcoming ? 'vs' : f.score}</div>
+      <div class="${played && f.score ? 'score' : 'score pending'}">${centre}</div>
       ${right}
-      <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? (f.comp || 'Pre-Season') : f.result}</div>
-    `;
-    fixtureList.appendChild(row);
+      <div class="tag">${f.tag || f.group}</div>
+    </div>`;
+  }
+
+  // split upcoming vs played
+  const upcoming = fixtures.filter(f=>!isPast(f)).sort((a,b)=> a.iso<b.iso?-1:1);
+  const played = fixtures.filter(f=>isPast(f)).sort((a,b)=> a.iso>b.iso?-1:1);
+
+  // render upcoming, grouped
+  const fixtureList = document.getElementById('fixtureList');
+  const groupOrder = ["Pre-Season","League"];
+  let anyUpcoming = false;
+  groupOrder.forEach(g=>{
+    const inGroup = upcoming.filter(f=>f.group===g);
+    if(!inGroup.length) return;
+    anyUpcoming = true;
+    const h = document.createElement('h3');
+    h.className = 'fixture-group-head';
+    h.textContent = g;
+    fixtureList.appendChild(h);
+    inGroup.forEach(f=> fixtureList.insertAdjacentHTML('beforeend', fixtureCard(f, false)));
   });
+  if(!anyUpcoming) fixtureList.innerHTML = '<div class="squad-empty">No upcoming fixtures right now.</div>';
 
-  // ticker shows upcoming fixtures until results come in
-  const results = fixtures.filter(f=>f.status!=='upcoming');
-  const tickSource = results.length ? results : fixtures;
+  // render results
+  const resultsList = document.getElementById('resultsList');
+  if(played.length){
+    played.forEach(f=> resultsList.insertAdjacentHTML('beforeend', fixtureCard(f, true)));
+  } else {
+    resultsList.innerHTML = '<div class="squad-empty">No results yet — check back once the season kicks off.</div>';
+  }
+
+  // ticker: next few upcoming across the club
+  const tickSource = upcoming.slice(0, 12);
   const tickerHtml = tickSource.map(f=>
-    f.status==='upcoming'
-      ? `<span class="tick">${f.team} vs ${f.opp} <span class="res">${f.date}</span></span>`
-      : `<span class="tick">${f.team} <span class="res">${f.score}</span> ${f.opp}</span>`
+    `<span class="tick">${f.team} vs ${f.opp} <span class="res">${fmtDate(f)}</span></span>`
   ).join('');
-  document.getElementById('tickerTrack').innerHTML = tickerHtml + tickerHtml; // doubled for seamless loop
+  document.getElementById('tickerTrack').innerHTML = tickerHtml + tickerHtml;
 
-  // ---------- LEAGUE TABLES ----------
-  // Add each league's URL as you get them; null = shows as "coming soon"
-  const leagueTables = [
-    {team:"1st Team", league:"National Conference", url:null},
-    {team:"Reserves", league:"BPIL Division 2", url:null},
-    {team:"Strollers", league:"BDFL", url:null},
-    {team:"Ladies", league:"NIWFA Championship", url:"https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX0NPTVBFVElUSU9OLGlkPTQ2NDMzODAz"},
-    {team:"2009s", league:"SBYL", url:null},
-    {team:"2010s", league:"SBYL", url:null},
-    {team:"2012s", league:"SBYL", url:null},
-    {team:"2013s", league:"SBYL", url:null},
-    {team:"2013 Colts", league:"SBYL", url:null},
-    {team:"2014s", league:"SBYL", url:null},
-    {team:"2014 Colts", league:"SBYL", url:null},
-    {team:"2014 Development", league:"SBYL", url:null},
-    {team:"2015s", league:"SBYL", url:null},
-    {team:"2015 Girls", league:"SBYL", url:null},
+  // ---------- COMMITTEE ----------
+  // Add real names/roles here.
+  const committee = [
+    {role:"Chairperson", name:"TBC"},
+    {role:"Vice-Chair", name:"TBC"},
+    {role:"Club Secretary", name:"TBC"},
+    {role:"Treasurer", name:"TBC"},
+    {role:"Child Welfare Officer", name:"TBC"},
+    {role:"Registrar", name:"TBC"},
   ];
-
-  const tableGrid = document.getElementById('tableGrid');
-  leagueTables.forEach(t=>{
-    if(t.url){
-      const a = document.createElement('a');
-      a.className = 'table-card';
-      a.href = t.url;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.innerHTML = `<span class="t-team">${t.team}</span><span class="t-league">${t.league}</span><span class="t-cta">View table &rarr;</span>`;
-      tableGrid.appendChild(a);
-    } else {
-      const d = document.createElement('div');
-      d.className = 'table-card pending';
-      d.innerHTML = `<span class="t-team">${t.team}</span><span class="t-league">${t.league}</span><span class="t-cta">Link coming soon</span>`;
-      tableGrid.appendChild(d);
-    }
+  const committeeGrid = document.getElementById('committeeGrid');
+  committee.forEach(m=>{
+    const initials = m.name === "TBC" ? "?" : m.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const card = document.createElement('div');
+    card.className = 'coach-card';
+    card.innerHTML = `<div class="coach-avatar">${initials}</div><h4>${m.name}</h4><p>${m.role}</p>`;
+    committeeGrid.appendChild(card);
   });
 
   // ---------- EVENTS (placeholder) ----------
