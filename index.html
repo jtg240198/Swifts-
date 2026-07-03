@@ -332,6 +332,12 @@
   .event-body h4{font-size:17px; margin-bottom:6px; font-family:'Inter',sans-serif; font-weight:700;}
   .event-body p{font-size:13px; color:var(--grey);}
 
+  .news-item{padding:24px 0; border-bottom:1px solid var(--line);}
+  .news-item .news-date{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;}
+  .news-item h4{font-size:18px; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:700;}
+  .news-item p{font-size:14px; color:var(--grey); line-height:1.6;}
+  .news-item img{margin-top:14px; max-width:340px; width:100%; border:1px solid var(--line);}
+
   footer{
     border-top:1px solid var(--line); padding:48px 24px 32px; text-align:center;
   }
@@ -365,6 +371,7 @@
       <a href="#committee">Committee</a>
       <a href="#sponsors">Sponsors</a>
       <a href="#events">Events &amp; Fundraising</a>
+      <a href="#news">News</a>
     </nav>
   </div>
 </header>
@@ -472,6 +479,17 @@
     <div id="eventList"></div>
   </section>
 
+  <hr class="divider">
+
+  <section id="news">
+    <div class="head">
+      <span class="eyebrow">Latest</span>
+      <h2>News</h2>
+      <p>Club updates, results roundups and announcements.</p>
+    </div>
+    <div id="newsList"></div>
+  </section>
+
 </main>
 
 <div class="squad-overlay" id="squadOverlay">
@@ -512,6 +530,7 @@
     <a href="#committee">Committee</a>
     <a href="#sponsors">Sponsors</a>
     <a href="#events">Events</a>
+    <a href="#news">News</a>
   </div>
 </footer>
 
@@ -953,7 +972,7 @@
 
   // ---------- EVENTS (placeholder) ----------
   const events = [
-    {d:"05", m:"JUL", title:"Mini Swifts Returns", desc:"Sunday 5th July, 10am at Conway Mill. Ages 2–5, boys & girls — new full-time coaches with JD Coaching and Winchester Coaching Academy. Join the Swifts family!", img:"assets/photos/mini-swifts-event.jpg"},
+    {d:"05", m:"JUL", title:"Mini Swifts Returns", desc:"Sunday 5th July, 10am at Conway Mill. Ages 2–5, boys & girls — new full-time coaches with JD Coaching and Winchester Coaching Academy. Join the Swifts family!", img:"assets/photos/mini-swifts-event.jpeg"},
     {d:"08", m:"AUG", title:"1st Team — NCL Opening Game", desc:"National Conference League season opener. Saturday 8th August, 3pm kick-off, Donegal Celtic Park."},
     {d:"18", m:"AUG", title:"Juvenile Training Recommences", desc:"Tuesday 18th August, 6pm at Coláiste Feirste. All youth age groups back for the new season."},
   ];
@@ -967,6 +986,28 @@
     `;
     eventList.appendChild(row);
   });
+
+  // ---------- NEWS ----------
+  // Newest first. img is optional — e.g. "assets/photos/news-1.jpg"
+  const news = [
+    {date:"3 Jul 2026", title:"1st Team National Conference League Fixtures Announced", body:"The 2026-27 NCL fixture list is out! Hoping you all get behind the lads 💛🖤", img:"assets/photos/news-ncl-fixtures.jpeg"},
+  ];
+  const newsList = document.getElementById('newsList');
+  if(news.length){
+    news.forEach(n=>{
+      const item = document.createElement('div');
+      item.className = 'news-item';
+      item.innerHTML = `
+        <div class="news-date">${n.date}</div>
+        <h4>${n.title}</h4>
+        <p>${n.body}</p>
+        ${n.img ? `<img src="${n.img}" alt="${n.title}" loading="lazy">` : ''}
+      `;
+      newsList.appendChild(item);
+    });
+  } else {
+    newsList.innerHTML = '<div class="squad-empty">No news posted yet — check back soon.</div>';
+  }
 
   // ---------- SPONSORS ----------
   // Edit freely: {name, note (optional team/kit sponsored), url (optional)}
