@@ -526,9 +526,9 @@
         {name:"2012s", league:"SBYL", people:[["Coach","Joe Diver"]]},
         {name:"2013s", league:"SBYL", people:[["Coach","Caomhin Williamson"],["Coach","Dan Walsh Snr"]]},
         {name:"2013 Colts", league:"SBYL", people:[["Coach","Dan Walsh Snr"],["Coach","Dan Walsh Jnr"]]},
-        {name:"2014s", league:"SBYL", people:[["Coach","Brendan Dornan"]]},
-        {name:"2014 Colts", league:"SBYL", people:[["Coach","Sean Rooney"],["Coach","Sean Austin"]]},
-        {name:"2014 Development", league:"SBYL", people:[["Coach","Michael Flannery"],["Coach","Stephen Doyle"],["Coach","Sean Hanna"]]},
+        {name:"2014s", league:"SBYL", people:[["Coach","Michael Flannery"],["Coach","Sean Rooney"]]},
+        {name:"2014 Colts", league:"SBYL", people:[["Coach","Brendan Doran"],["Coach","Sean Austin"],["Coach","Peter Walsh"]]},
+        {name:"2014 Development", league:"SBYL", people:[["Coach","Stephen Doyle"],["Coach","Sean Hanna"]]},
         {name:"2015s", league:"SBYL", people:[["Coach","Harry McDonnell"],["Coach","Conor McLarnon"]]},
         {name:"2015 Girls", league:"SBYL", people:[["Coach","James Carlin"]]},
       ]
@@ -562,7 +562,15 @@
   // Team photos: list image paths per team, e.g. ["assets/photos/1st-1.jpg", ...]
   // Empty array = "Photos coming soon".
   const teamPhotos = {
-    "1st Team": ["assets/champions.jpg"]
+    "1st Team": ["assets/champions.jpg","assets/photos/1st-team-1.jpg","assets/photos/1st-team-2.jpg","assets/photos/1st-team-3.jpg"],
+    "Strollers": ["assets/photos/strollers-1.jpg","assets/photos/strollers-2.jpg"],
+    "Football for All": ["assets/photos/football-for-all-1.jpg","assets/photos/football-for-all-2.jpg","assets/photos/football-for-all-3.jpg"],
+    "2009s": ["assets/photos/2009-1.jpg","assets/photos/2009-2.jpg","assets/photos/2009-3.jpg"],
+    "2012s": ["assets/photos/2012-1.jpg","assets/photos/2012-2.jpg","assets/photos/2012-3.jpg","assets/photos/2012-4.jpg"],
+    "2014 Colts": ["assets/photos/2014-colts-1.jpg","assets/photos/2014-colts-2.jpg"],
+    "2014 Development": ["assets/photos/2014-development-1.jpg","assets/photos/2014-development-2.jpg"],
+    "2018s": ["assets/photos/2018-1.jpg","assets/photos/2018-2.jpg","assets/photos/2018-3.jpg"],
+    "2019s": ["assets/photos/2019-2.jpg","assets/photos/2019-3.jpg","assets/photos/2019-4.jpg"]
   };
 
   const divWrap = document.getElementById('divisions');
@@ -581,10 +589,14 @@
             <span class="league">${t.league}</span>
             <ul>${t.people.map(p=>`<li>${p[0]}: <b>${p[1]}</b></li>`).join('')}</ul>
             <div class="card-actions">
-              ${leagueUrls[t.name]
-                ? `<a class="card-btn" href="${leagueUrls[t.name]}" target="_blank" rel="noopener">League Table</a>`
-                : `<span class="card-btn disabled">Table soon</span>`}
-              <button class="card-btn squad-btn" data-team="${t.name}">Squad</button>
+              ${t.name !== "Mini Swifts"
+                ? (leagueUrls[t.name]
+                    ? `<a class="card-btn" href="${leagueUrls[t.name]}" target="_blank" rel="noopener">League Table</a>`
+                    : `<span class="card-btn disabled">Table soon</span>`)
+                : ``}
+              ${["1st Team","Reserves","Strollers","Ladies"].includes(t.name)
+                ? `<button class="card-btn squad-btn" data-team="${t.name}">Squad</button>`
+                : ``}
               <button class="card-btn photos-btn" data-team="${t.name}">Photos</button>
             </div>
           </div>`).join('')}
@@ -599,7 +611,34 @@
     "1st Team": [],
     "Reserves": [],
     "Strollers": [],
-    "Ladies": [],
+    "Ladies": [
+      {name:"Leah Heaney", pos:"Goalkeeper"},
+      {name:"Lauren Smyth", pos:"Defender"},
+      {name:"Tíarna Hunter", pos:"Defender"},
+      {name:"Ellie Blamey", pos:"Defender"},
+      {name:"Aoibh Carrol", pos:"Defender"},
+      {name:"Anna Whibley", pos:"Defender"},
+      {name:"Rebecca Curley", pos:"Defender"},
+      {name:"Lauren Mulligan", pos:"Defender"},
+      {name:"Hollie Mailey", pos:"Defender"},
+      {name:"Grace Ferrick", pos:"Defender"},
+      {name:"Marie-Therese Hanna", pos:"Defender"},
+      {name:"Eimhear O'Prey", pos:"Defender"},
+      {name:"Leah McEvoy", pos:"Midfielder"},
+      {name:"Courtney Moore", pos:"Midfielder"},
+      {name:"Debbie Boyd", pos:"Midfielder"},
+      {name:"Siobhan Bell", pos:"Midfielder"},
+      {name:"Brooke Baine", pos:"Midfielder"},
+      {name:"Róisín Bolger", pos:"Midfielder"},
+      {name:"Abby McCarthy", pos:"Midfielder"},
+      {name:"Katierose Rice", pos:"Forward"},
+      {name:"Roise Thompson", pos:"Forward"},
+      {name:"Chloe Friary", pos:"Forward"},
+      {name:"Ella Copeland", pos:"Forward"},
+      {name:"Olivia Connelly", pos:"Forward"},
+      {name:"Megan Copeland", pos:"Forward"},
+      {name:"Kayleigh Graham", pos:"Forward"}
+    ],
     "Football for All": [],
     "2009s": [], "2010s": [], "2012s": [], "2013s": [], "2013 Colts": [],
     "2014s": [], "2014 Colts": [], "2014 Development": [], "2015s": [], "2015 Girls": [],
@@ -639,17 +678,29 @@
         meta.people.forEach(p=>{ html += `<div class="staff-line">${p[0]}: <b>${p[1]}</b></div>`; });
         html += '</div>';
       }
-      // players
+      // players — grouped by position when positions are present
       const players = squads[teamName] || [];
       if(players.length){
-        html += '<div class="squad-group"><h3>Players</h3><div class="squad-list">';
-        players.forEach(pl=>{
-          html += `<div class="player">
-            <span class="num">${pl.num || ''}</span>
-            <div><div class="pname">${pl.name}</div>${pl.pos ? `<div class="ppos">${pl.pos}</div>` : ''}</div>
-          </div>`;
-        });
-        html += '</div></div>';
+        const order = ["Goalkeeper","Defender","Midfielder","Forward"];
+        const hasPos = players.some(p=>p.pos);
+        if(hasPos){
+          const groups = {};
+          players.forEach(p=>{ const k = p.pos || "Squad"; (groups[k] = groups[k] || []).push(p); });
+          const keys = [...order.filter(o=>groups[o]), ...Object.keys(groups).filter(k=>!order.includes(k))];
+          keys.forEach(k=>{
+            html += `<div class="squad-group"><h3>${k}s</h3><div class="squad-list">`;
+            groups[k].forEach(pl=>{
+              html += `<div class="player"><span class="num">${pl.num || ''}</span><div><div class="pname">${pl.name}</div></div></div>`;
+            });
+            html += '</div></div>';
+          });
+        } else {
+          html += '<div class="squad-group"><h3>Players</h3><div class="squad-list">';
+          players.forEach(pl=>{
+            html += `<div class="player"><span class="num">${pl.num || ''}</span><div><div class="pname">${pl.name}</div></div></div>`;
+          });
+          html += '</div></div>';
+        }
       } else {
         html += '<div class="squad-empty">Squad list coming soon.</div>';
       }
