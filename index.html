@@ -57,7 +57,7 @@
     padding:14px 24px; max-width:1160px; margin:0 auto;
   }
   .brand{display:flex; align-items:center; gap:12px;}
-  .brand img{width:38px; height:38px; border-radius:50%;}
+  .brand img{width:40px; height:44px; object-fit:contain;}
   .brand span{font-family:'Anton',sans-serif; font-size:18px; letter-spacing:0.5px;}
   nav.links{display:flex; gap:28px; font-size:13px; letter-spacing:0.5px; text-transform:uppercase; font-weight:600;}
   nav.links a{opacity:0.75; transition:opacity .15s, color .15s;}
@@ -94,7 +94,7 @@
       repeating-linear-gradient(115deg, transparent 0 60px, rgba(246,197,0,0.035) 60px 62px);
     pointer-events:none;
   }
-  .hero-crest{width:120px; height:120px; border-radius:50%; margin:0 auto 28px; box-shadow:0 0 0 3px var(--gold), 0 20px 50px rgba(0,0,0,0.5);}
+  .hero-crest{width:auto; height:170px; object-fit:contain; margin:0 auto 26px; filter:drop-shadow(0 16px 30px rgba(0,0,0,0.6));}
   .hero h1{
     font-size:clamp(48px, 10vw, 108px);
     line-height:0.92;
@@ -169,6 +169,15 @@
   }
   .fixture-card .tag.loss{border-color:#e2564f; color:#e2564f;}
   .fixture-card .tag.draw{border-color:var(--grey); color:var(--grey);}
+  .fixture-card .side{display:flex; align-items:center; gap:12px; min-width:0;}
+  .badge-slot{flex:none; width:36px; display:flex; justify-content:center;}
+  .badge-img{width:34px; height:38px; object-fit:contain;}
+  .badge-generic{
+    width:34px; height:34px; border-radius:50%;
+    background:var(--ink); border:1px solid var(--line);
+    color:var(--grey); font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
   @media (max-width:600px){
     .fixture-card{grid-template-columns:1fr auto; grid-template-rows:auto auto; row-gap:10px;}
     .fixture-card .tag{grid-column:2; grid-row:1;}
@@ -272,7 +281,7 @@
 <header class="site-nav">
   <div class="nav-inner">
     <a class="brand" href="#top">
-      <img src="assets/crest.png" alt="St James' Swifts FC crest">
+      <img src="assets/crest_shield.png" alt="St James' Swifts FC crest">
       <span>St James' Swifts</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
@@ -288,9 +297,9 @@
 </header>
 
 <div id="top" class="hero">
-  <img class="hero-crest" src="assets/crest.png" alt="St James' Swifts FC crest">
-  <h1><small>Est. Belfast</small>Swifts</h1>
-  <p class="tag">Twenty teams. One club. From Mini Swifts to the National Conference — St James' Swifts FC, Belfast.</p>
+  <img class="hero-crest" src="assets/crest_gold.png" alt="St James' Swifts FC crest">
+  <h1><small>Est. Belfast</small>Up The Swifts</h1>
+  <p class="tag">Twenty teams. One club. From Mini Swifts to the National Conference.</p>
   <div class="cta-row">
     <a class="btn btn-solid" href="#fixtures">Latest Results</a>
     <a class="btn btn-outline" href="#teams">Our Teams</a>
@@ -381,7 +390,7 @@
 
 <footer>
   <a class="brand" href="#top">
-    <img src="assets/crest.png" alt="St James' Swifts FC crest" style="width:34px;height:34px;border-radius:50%;">
+    <img src="assets/crest_shield.png" alt="St James' Swifts FC crest" style="width:32px;height:36px;object-fit:contain;">
     <span style="font-family:'Anton',sans-serif; font-size:16px;">St James' Swifts FC</span>
   </a>
   <p>Belfast, Northern Ireland</p>
@@ -491,36 +500,41 @@
 
   // ---------- FIXTURES ----------
   const fixtures = [
-    {team:"1st Team", opp:"Desertmartin", date:"SAT 11 JUL · 2PM KO", venue:"Dromore Road", status:"upcoming"},
-    {team:"1st Team", opp:"Ards Rangers", date:"SAT 18 JUL · 2PM KO", venue:"Drome Park", status:"upcoming"},
-    {team:"1st Team", opp:"Albert Foundry", date:"TUE 21 JUL · 7PM KO", venue:"Paisley Park", status:"upcoming"},
-    {team:"1st Team", opp:"Warrenpoint Town", date:"SAT 25 JUL · 2PM KO", venue:"Milltown", status:"upcoming"},
-    {team:"Ladies", opp:"Sion Swifts Ladies", date:"FRI 10 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballyclare Comrades Ladies", date:"WED 22 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballymoney United Ladies", date:"WED 29 JUL · 7:45PM KO", venue:"Paddy's Park", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Strabane Athletic Ladies", date:"WED 05 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Bangor FC Ladies", date:"WED 12 AUG · 7:45PM KO", venue:"Clandeboye Park", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Ballymena United Women", date:"WED 19 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Craigavon City Ladies", date:"FRI 28 AUG · 7:45PM KO", venue:"Drumgor Road", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Greenisland Women", date:"WED 02 SEP · 7:45PM KO", venue:"Whiterock Leisure Centre", status:"upcoming", comp:"NIWFA"},
-    {team:"Ladies", opp:"Sion Swifts Ladies", date:"WED 09 SEP · 7:45PM KO", venue:"Melvin 3G", status:"upcoming", comp:"NIWFA"},
+    {team:"1st Team", opp:"Desertmartin", date:"SAT 11 JUL · 2PM KO", venue:"Dromore Road", home:false, status:"upcoming"},
+    {team:"1st Team", opp:"Ards Rangers", date:"SAT 18 JUL · 2PM KO", venue:"Drome Park", home:false, status:"upcoming"},
+    {team:"1st Team", opp:"Albert Foundry", date:"TUE 21 JUL · 7PM KO", venue:"Paisley Park", home:false, status:"upcoming"},
+    {team:"1st Team", opp:"Warrenpoint Town", date:"SAT 25 JUL · 2PM KO", venue:"Milltown", home:false, status:"upcoming"},
+    {team:"Ladies", opp:"Sion Swifts Ladies", date:"FRI 10 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballyclare Comrades Ladies", date:"WED 22 JUL · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballymoney United Ladies", date:"WED 29 JUL · 7:45PM KO", venue:"Paddy's Park", home:false, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Strabane Athletic Ladies", date:"WED 05 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Bangor FC Ladies", date:"WED 12 AUG · 7:45PM KO", venue:"Clandeboye Park", home:false, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Ballymena United Women", date:"WED 19 AUG · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Craigavon City Ladies", date:"FRI 28 AUG · 7:45PM KO", venue:"Drumgor Road", home:false, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Greenisland Women", date:"WED 02 SEP · 7:45PM KO", venue:"Whiterock Leisure Centre", home:true, status:"upcoming", comp:"NIWFA"},
+    {team:"Ladies", opp:"Sion Swifts Ladies", date:"WED 09 SEP · 7:45PM KO", venue:"Melvin 3G", home:false, status:"upcoming", comp:"NIWFA"},
   ];
 
   const fixtureList = document.getElementById('fixtureList');
+  const oppBadge = (name)=>{
+    const initials = name.split(' ').filter(w=>w[0]===w[0].toUpperCase()).map(w=>w[0]).slice(0,2).join('');
+    return `<span class="badge-generic">${initials}</span>`;
+  };
+  const swiftsBadge = `<img class="badge-img" src="assets/crest_shield.png" alt="">`;
+
   fixtures.forEach(f=>{
     const row = document.createElement('div');
     row.className = 'fixture-card';
     const isUpcoming = f.status === 'upcoming';
+    // home team on the left
+    const swifts = `<div class="side"><div class="badge-slot">${swiftsBadge}</div><div><div class="team us">${f.team}</div><div class="meta">${f.date}</div></div></div>`;
+    const opp = `<div class="side"><div class="badge-slot">${oppBadge(f.opp)}</div><div><div class="team">${f.opp}</div><div class="meta">${isUpcoming ? f.venue : 'Full Time'}</div></div></div>`;
+    const left = f.home ? swifts : opp;
+    const right = f.home ? opp : swifts;
     row.innerHTML = `
-      <div>
-        <div class="team us">${f.team}</div>
-        <div class="meta">${f.date}</div>
-      </div>
+      ${left}
       <div class="${isUpcoming ? 'score pending' : 'score'}">${isUpcoming ? 'vs' : f.score}</div>
-      <div>
-        <div class="team">${f.opp}</div>
-        <div class="meta">${isUpcoming ? f.venue : 'Full Time'}</div>
-      </div>
+      ${right}
       <div class="tag ${f.result === 'loss' ? 'loss' : f.result === 'draw' ? 'draw' : ''}">${isUpcoming ? (f.comp || 'Pre-Season') : f.result}</div>
     `;
     fixtureList.appendChild(row);
