@@ -96,7 +96,9 @@
     padding:90px 24px 60px;
     text-align:center;
     background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(246,197,0,0.18), transparent 60%),
+      linear-gradient(180deg, rgba(12,12,13,0.55) 0%, rgba(12,12,13,0.80) 55%, rgba(12,12,13,0.97) 100%),
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(246,197,0,0.12), transparent 60%),
+      url('assets/hero-collage.jpg') center top / cover no-repeat,
       var(--ink);
     border-bottom:1px solid var(--line);
   }
@@ -104,10 +106,10 @@
     content:"";
     position:absolute; inset:0;
     background:
-      repeating-linear-gradient(115deg, transparent 0 60px, rgba(246,197,0,0.035) 60px 62px);
+      repeating-linear-gradient(115deg, transparent 0 60px, rgba(246,197,0,0.03) 60px 62px);
     pointer-events:none;
   }
-  .hero-crest{width:auto; height:170px; object-fit:contain; margin:0 auto 26px; filter:drop-shadow(0 16px 30px rgba(0,0,0,0.6));}
+  .hero-crest{width:auto; height:170px; object-fit:contain; margin:0 auto 26px; filter:drop-shadow(0 16px 30px rgba(0,0,0,0.85));}
   .hero h1{
     font-size:clamp(48px, 10vw, 108px);
     line-height:0.92;
@@ -117,7 +119,8 @@
   .hero h1 small{display:block; color:var(--paper); font-size:0.34em; letter-spacing:4px; margin-bottom:10px;}
   .hero p.tag{
     max-width:520px; margin:22px auto 0;
-    color:var(--grey); font-size:16px;
+    color:#d8d8db; font-size:16px;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6);
   }
   .hero .cta-row{display:flex; gap:14px; justify-content:center; margin-top:36px; flex-wrap:wrap;}
   .social-row{display:flex; gap:14px; justify-content:center; margin-top:20px; flex-wrap:wrap;}
@@ -246,6 +249,14 @@
   .team-card ul{list-style:none;}
   .team-card li{font-size:13px; color:var(--grey); margin-bottom:3px;}
   .team-card li b{color:var(--paper); font-weight:600;}
+  .sponsor-card{text-align:center;}
+  .sponsor-logo-wrap{
+    display:flex; align-items:center; justify-content:center;
+    height:84px; margin-bottom:14px; border-radius:2px; padding:10px;
+  }
+  .sponsor-logo-wrap.light{background:#fff;}
+  .sponsor-logo-wrap.dark{background:#0c0c0d; border:1px solid var(--line);}
+  .sponsor-logo-wrap img{max-height:100%; max-width:100%; object-fit:contain;}
   .card-actions{display:flex; gap:6px; margin-top:14px;}
   .card-btn{
     flex:1; text-align:center;
@@ -379,7 +390,6 @@
 </head>
 <body>
 
-<div class="placeholder-banner">SITE PREVIEW — fixtures, events &amp; some photos below are placeholders. Swap in real content before launch.</div>
 
 <header class="site-nav">
   <div class="nav-inner">
@@ -1080,21 +1090,31 @@
   // ---------- SPONSORS ----------
   // Edit freely: {name, note (optional team/kit sponsored), url (optional)}
   const sponsors = [
-    {name:"City Tours Belfast", note:"1st Team"},
-    {name:"Specsavers — Park Centre", note:"Youth"},
-    {name:"Fosters Tyre Services", note:"Youth"},
-    {name:"Mallon Brothers Funeral Directors", note:"Girls"},
-    {name:"SM Joinery", note:"Mini Swifts"},
-    {name:"Aldo's", note:"Football for All"},
-    {name:"The Little Bistro", note:"Youth"},
-    {name:"Theresa Dunlop Properties", note:"Club"},
-    {name:"Big G's Competitions", note:"Club"},
+    {name:"Big G's Competitions", note:"Club", logo:"assets/sponsors/sponsor-big-gs-competitions.png", card:"dark"},
+    {name:"City Tours Belfast", note:"Club · 1st Team", logo:"assets/sponsors/sponsor-city-tours-belfast.png", card:"light"},
+    {name:"Theresa Dunlop Properties", note:"Club", logo:"assets/sponsors/sponsor-theresa-dunlop.png", card:"light"},
+    {name:"Flowers aRe Us", note:"Strollers", logo:"assets/sponsors/sponsor-flowers-are-us.png", card:"light"},
+    {name:"Aldo's", note:"Football for All", logo:"assets/sponsors/sponsor-aldos.png", card:"light"},
+    {name:"Mal Removals", note:"2009s", logo:"assets/sponsors/sponsor-mal-removals.png", card:"light"},
+    {name:"GMB Union", note:"2010s", logo:"assets/sponsors/sponsor-gmb-union.png", card:"light"},
+    {name:"4 Accident Management", note:"2012s", logo:"assets/sponsors/sponsor-4-accident-management.png", card:"light"},
+    {name:"Hackett Family", note:"2012s", logo:null},
+    {name:"Specsavers — Park Centre", note:"2013s & 2013 Colts", logo:"assets/sponsors/sponsor-specsavers.png", card:"light"},
+    {name:"Park Centre", note:"2014s, 2014 Colts & 2014 Development", logo:"assets/sponsors/sponsor-park-centre.png", card:"light"},
+    {name:"Fosters Tyre Services", note:"2015s", logo:"assets/sponsors/sponsor-fosters-tyres.png", card:"light"},
+    {name:"Mallon Brothers Funeral Directors", note:"2015 Girls", logo:"assets/sponsors/sponsor-mallon-brothers.png", card:"light"},
+    {name:"Thrive Belfast", note:"2017s", logo:"assets/sponsors/sponsor-thrive.png", card:"dark"},
+    {name:"The Little Bistro", note:"2018s", logo:"assets/sponsors/sponsor-the-little-bistro.png", card:"light"},
+    {name:"SMG Gas", note:"2019s", logo:"assets/sponsors/sponsor-smg-gas.png", card:"dark"},
+    {name:"SM Joinery", note:"2020s / 2021s", logo:"assets/sponsors/sponsor-sm-joinery.png", card:"light"},
   ];
   const sponsorGrid = document.getElementById('sponsorGrid');
   sponsors.forEach(s=>{
     const card = document.createElement('div');
-    card.className = 'team-card';
-    card.innerHTML = `<h4>${s.name}</h4>${s.note ? `<span class="league">${s.note}</span>` : ''}`;
+    card.className = 'team-card sponsor-card';
+    card.innerHTML = `
+      ${s.logo ? `<div class="sponsor-logo-wrap ${s.card==='dark'?'dark':'light'}"><img src="${s.logo}" alt="${s.name}"></div>` : ''}
+      <h4>${s.name}</h4>${s.note ? `<span class="league">${s.note}</span>` : ''}`;
     sponsorGrid.appendChild(card);
   });
 
