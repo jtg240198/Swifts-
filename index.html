@@ -373,6 +373,7 @@
   .news-item h4{font-size:18px; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:700;}
   .news-item p{font-size:14px; color:var(--grey); line-height:1.6;}
   .news-item img{margin-top:14px; max-width:340px; width:100%; border:1px solid var(--line);}
+  .news-item video{margin-top:14px; max-width:340px; width:100%; border:1px solid var(--line); display:block;}
 
   footer{
     border-top:1px solid var(--line); padding:48px 24px 32px; text-align:center;
@@ -1068,6 +1069,7 @@
   // ---------- NEWS ----------
   // Newest first. img is optional — e.g. "assets/photos/news-1.jpg"
   const news = [
+    {date:"5 Jul 2026", title:"Mini Swifts are BACK 🟡⚫", body:"First week was unreal — 20+ mini Swifts through the door! 2nd class now opening, spots filling fast.", video:"assets/photos/mini-swifts-week1.mp4", poster:"assets/photos/mini-swifts-week1-poster.jpg"},
     {date:"3 Jul 2026", title:"1st Team National Conference League Fixtures Announced", body:"The 2026-27 NCL fixture list is out! Hoping you all get behind the lads 💛🖤", img:"assets/photos/news-ncl-fixtures.jpeg"},
   ];
   const newsList = document.getElementById('newsList');
@@ -1080,6 +1082,7 @@
         <h4>${n.title}</h4>
         <p>${n.body}</p>
         ${n.img ? `<img src="${n.img}" alt="${n.title}" loading="lazy">` : ''}
+        ${n.video ? `<video controls playsinline preload="none" ${n.poster ? `poster="${n.poster}"` : ''}><source src="${n.video}" type="video/mp4"></video>` : ''}
       `;
       newsList.appendChild(item);
     });
