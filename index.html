@@ -313,6 +313,7 @@
   .staff-line b{color:var(--paper);}
   .squad-gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
   .squad-gallery img{width:100%; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--line); background:var(--ink-2);}
+  .gallery-video{width:100%; max-width:420px; display:block; margin:0 auto 10px; border:1px solid var(--line); background:var(--ink-2);}
   @media (max-width:640px){ .squad-gallery{grid-template-columns:repeat(2,1fr);} }
 
   /* ---------- LEAGUE TABLES ---------- */
@@ -692,7 +693,8 @@
     "2017s": ["assets/photos/2017-1.jpg","assets/photos/2017-2.jpg","assets/photos/2017-3.jpg"],
     "2018s": ["assets/photos/2018-1.jpg","assets/photos/2018-2.jpg","assets/photos/2018-3.jpg"],
     "2019s": ["assets/photos/2019-2.jpg","assets/photos/2019-3.jpg","assets/photos/2019-4.jpg"],
-    "2020s / 2021s": ["assets/photos/2020-2021-1.jpg","assets/photos/2020-2021-2.jpg","assets/photos/2020-2021-3.jpg","assets/photos/2020-2021-4.jpg","assets/photos/2020-2021-5.jpg","assets/photos/2020-2021-6.jpg"]
+    "2020s / 2021s": ["assets/photos/2020-2021-1.jpg","assets/photos/2020-2021-2.jpg","assets/photos/2020-2021-3.jpg","assets/photos/2020-2021-4.jpg","assets/photos/2020-2021-5.jpg","assets/photos/2020-2021-6.jpg"],
+    "Mini Swifts": ["assets/photos/mini-swifts-week1.mp4"]
   };
 
   const divWrap = document.getElementById('divisions');
@@ -787,9 +789,19 @@
     if(mode === 'photos'){
       const pics = teamPhotos[teamName] || [];
       if(pics.length){
-        html += '<div class="squad-group"><div class="squad-gallery">';
-        pics.forEach(src=>{ html += `<img src="${src}" alt="${teamName} photo" loading="lazy">`; });
-        html += '</div></div>';
+        const vids = pics.filter(s=>s.toLowerCase().endsWith('.mp4'));
+        const imgs = pics.filter(s=>!s.toLowerCase().endsWith('.mp4'));
+        html += '<div class="squad-group">';
+        vids.forEach(src=>{
+          const poster = src.replace(/\.mp4$/i, '-poster.jpg');
+          html += `<video class="gallery-video" controls playsinline preload="none" poster="${poster}"><source src="${src}" type="video/mp4"></video>`;
+        });
+        if(imgs.length){
+          html += '<div class="squad-gallery">';
+          imgs.forEach(src=>{ html += `<img src="${src}" alt="${teamName} photo" loading="lazy">`; });
+          html += '</div>';
+        }
+        html += '</div>';
       } else {
         html += '<div class="squad-empty">Photos coming soon.</div>';
       }
