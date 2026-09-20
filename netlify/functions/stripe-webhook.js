@@ -7,96 +7,80 @@ const supabase = createClient(
 );
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
+async function sendConfirmationEmail(meta, toEmail) {
+  if (!process.env.EMAILJS_SERVICE_ID) return; // EmailJS not configured — skip quietly
+
+  try {
+    await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: process.env.EMAILJS_SERVICE_ID,
+        template_id: process.env.EMAILJS_TEMPLATE_ID,
+        user_id: process.env.EMAILJS_PUBLIC_KEY,
+        accessToken: process.env.EMAILJS_PRIVATE_KEY,
+        template_params: {
+          to_email: toEmail,
+          to_name: meta.owner_name,
+          bonus_number: meta.bonus_number,
+          month_name: meta.month_name,
+          year: meta.year,
+          saturdays: meta.saturdays
+        }
+      })
+    });
+  } catch (err) {
+    // Don't fail the whole webhook over an email hiccup — the number is
+    // already correctly marked as taken either way.
+    console.error('EmailJS send failed', err);
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method not allowed' };
   }
 
   const sig = event.headers['stripe-signature'];
-  const rawBody = event.isBase64Encoded
-    ? Buffer.from(event.body, 'base64')
-    : event.body;
+  const rawBody = event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
 
   let stripeEvent;
   try {
-    stripeEvent = stripe.webhooks.constructEvent(
-      rawBody,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
+    stripeEvent = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    return { statusCode: 400, body: `Webhook signature verification failed` };
+    return { statusCode: 400, body: 'Webhook signature verification failed' };
   }
 
   try {
-    switch (stripeEvent.type) {
-      case 'checkout.session.completed': {
-        const session = stripeEvent.data.object;
-        if (session.mode !== 'subscription') break;
-        const number = parseInt(session.metadata?.bonus_number, 10);
-        if (!Number.isInteger(number)) break;
-
-        await supabase
-          .from('bonus_numbers')
-          .update({
-            status: 'taken',
-            pending_expires_at: null,
-            stripe_customer_id: session.customer,
-            stripe_subscription_id: session.subscription,
-            claimed_at: new Date().toISOString()
-          })
-          .eq('number', number);
-        break;
+    if (stripeEvent.type === 'checkout.session.completed') {
+      const session = stripeEvent.data.object;
+      if (session.mode !== 'payment') {
+        return { statusCode: 200, body: JSON.stringify({ received: true }) };
       }
 
-      // Safety net: if a subscription ends up cancelled or unpaid by any
-      // route (owner cancels in Stripe dashboard, card fails permanently,
-      // customer cancels), free the number back up automatically.
-      case 'customer.subscription.deleted': {
-        const sub = stripeEvent.data.object;
-        await supabase
-          .from('bonus_numbers')
-          .update({
-            status: 'free',
-            owner_name: null,
-            owner_email: null,
-            owner_phone: null,
-            stripe_customer_id: null,
-            stripe_subscription_id: null,
-            pending_expires_at: null,
-            claimed_at: null
-          })
-          .eq('stripe_subscription_id', sub.id);
-        break;
+      const meta = session.metadata || {};
+      const number = parseInt(meta.bonus_number, 10);
+      if (!Number.isInteger(number)) {
+        return { statusCode: 200, body: JSON.stringify({ received: true }) };
       }
 
-      case 'customer.subscription.updated': {
-        const sub = stripeEvent.data.object;
-        if (sub.status === 'canceled' || sub.status === 'unpaid') {
-          await supabase
-            .from('bonus_numbers')
-            .update({
-              status: 'free',
-              owner_name: null,
-              owner_email: null,
-              owner_phone: null,
-              stripe_customer_id: null,
-              stripe_subscription_id: null,
-              pending_expires_at: null,
-              claimed_at: null
-            })
-            .eq('stripe_subscription_id', sub.id);
-        }
-        break;
-      }
+      await supabase
+        .from('bonus_numbers')
+        .update({
+          status: 'taken',
+          pending_expires_at: null,
+          paid_month: meta.paid_month,
+          stripe_customer_id: session.customer,
+          stripe_session_id: session.id,
+          claimed_at: new Date().toISOString()
+        })
+        .eq('number', number);
 
-      default:
-        break; // ignore everything else
+      await sendConfirmationEmail(meta, session.customer_details?.email || session.customer_email);
     }
 
     return { statusCode: 200, body: JSON.stringify({ received: true }) };
   } catch (err) {
-    // Returning 500 makes Stripe retry the webhook later.
     return { statusCode: 500, body: JSON.stringify({ error: 'Webhook handler failed' }) };
   }
 };
