@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonus Ball — Owner</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --ink:#0c0c0d; --ink-2:#17171a; --gold:#f6c500; --paper:#f6f4ec;
+    --grey:#9a9a9e; --line:rgba(246,244,236,0.12); --red:#e2564f; --green:#3fae60;
+  }
+  *{box-sizing:border-box;}
+  body{
+    background:var(--ink); color:var(--paper); font-family:'Inter',system-ui,sans-serif;
+    margin:0; padding:24px; line-height:1.5;
+  }
+  h1{font-size:22px; margin-bottom:4px;}
+  .sub{color:var(--grey); font-size:13px; margin-bottom:28px;}
+  .card{background:var(--ink-2); border:1px solid var(--line); padding:20px; margin-bottom:20px; border-radius:4px;}
+  label{display:block; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; color:var(--grey); margin-bottom:6px;}
+  input{
+    width:100%; padding:10px 12px; background:var(--ink); border:1px solid var(--line);
+    color:var(--paper); border-radius:2px; font-size:14px; margin-bottom:14px;
+  }
+  button{
+    background:var(--gold); color:var(--ink); border:none; padding:10px 20px;
+    font-weight:700; border-radius:2px; cursor:pointer; font-size:13px;
+  }
+  button:hover{opacity:0.9;}
+  button.secondary{background:none; border:1px solid var(--line); color:var(--paper);}
+  .error{color:var(--red); font-size:13px; margin-top:-6px; margin-bottom:14px;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);}
+  th{color:var(--grey); text-transform:uppercase; font-size:11px; letter-spacing:0.5px;}
+  .status-free{color:var(--grey);}
+  .status-pending{color:var(--gold);}
+  .status-taken{color:var(--green);}
+  .hidden{display:none;}
+  .stats{display:flex; gap:24px; margin-bottom:20px; flex-wrap:wrap;}
+  .stat{font-size:13px; color:var(--grey);}
+  .stat b{color:var(--gold); font-size:20px; display:block; font-family:inherit;}
+  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:end;}
+  .row > div{flex:1; min-width:160px;}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="card" style="max-width:360px; margin:60px auto;">
+  <h1>Bonus Ball</h1>
+  <div class="sub">Owner login</div>
+  <label for="pw">Password</label>
+  <input type="password" id="pw" autocomplete="current-password">
+  <div class="error hidden" id="loginError">Incorrect password.</div>
+  <button onclick="login()">Log in</button>
+</div>
+
+<div id="adminView" class="hidden" style="max-width:900px; margin:0 auto;">
+  <h1>Bonus Ball — Owner</h1>
+  <div class="sub">St James' Swifts FC · numbers, subscribers and weekly draws</div>
+
+  <div class="stats">
+    <div class="stat"><b id="statTaken">–</b>Numbers taken</div>
+    <div class="stat"><b id="statFree">–</b>Numbers free</div>
+    <div class="stat"><b id="statPending">–</b>Pending checkout</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:14px;">Record this Saturday's draw</h3>
+    <div class="row">
+      <div>
+        <label for="drawDate">Draw date (Saturday)</label>
+        <input type="date" id="drawDate">
+      </div>
+      <div>
+        <label for="winningNumber">Irish Lottery bonus ball number</label>
+        <input type="number" id="winningNumber" min="1" max="59">
+      </div>
+      <div style="flex:0 0 auto;">
+        <button onclick="saveDraw()">Save draw</button>
+      </div>
+    </div>
+    <div class="error hidden" id="drawError"></div>
+    <div id="drawResult" style="margin-top:12px; font-size:14px;"></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:14px;">Recent draws</h3>
+    <table id="drawsTable">
+      <thead><tr><th>Date</th><th>Winning #</th><th>Winner</th><th>Paid</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:14px;">All numbers</h3>
+    <table id="numbersTable">
+      <thead><tr><th>#</th><th>Status</th><th>Name</th><th>Email</th><th>Phone</th><th>Since</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const FN = '/.netlify/functions';
+  let token = sessionStorage.getItem('bb_owner_token') || null;
+
+  async function login(){
+    const pw = document.getElementById('pw').value;
+    const errEl = document.getElementById('loginError');
+    errEl.classList.add('hidden');
+    try {
+      const res = await fetch(`${FN}/owner-login`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ password: pw })
+      });
+      if(!res.ok){ errEl.classList.remove('hidden'); return; }
+      const data = await res.json();
+      token = data.token;
+      sessionStorage.setItem('bb_owner_token', token);
+      showAdmin();
+    } catch {
+      errEl.textContent = 'Could not reach the server.';
+      errEl.classList.remove('hidden');
+    }
+  }
+
+  async function authedFetch(path, opts = {}){
+    const res = await fetch(`${FN}/${path}`, {
+      ...opts,
+      headers: { ...(opts.headers||{}), Authorization: `Bearer ${token}` }
+    });
+    if(res.status === 401){
+      sessionStorage.removeItem('bb_owner_token');
+      token = null;
+      document.getElementById('adminView').classList.add('hidden');
+      document.getElementById('loginView').classList.remove('hidden');
+      throw new Error('Session expired');
+    }
+    return res;
+  }
+
+  async function showAdmin(){
+    document.getElementById('loginView').classList.add('hidden');
+    document.getElementById('adminView').classList.remove('hidden');
+    await loadData();
+  }
+
+  async function loadData(){
+    const res = await authedFetch('owner-data');
+    const { numbers, draws } = await res.json();
+
+    const taken = numbers.filter(n=>n.status==='taken').length;
+    const pending = numbers.filter(n=>n.status==='pending').length;
+    document.getElementById('statTaken').textContent = taken;
+    document.getElementById('statFree').textContent = numbers.length - taken - pending;
+    document.getElementById('statPending').textContent = pending;
+
+    const numBody = document.querySelector('#numbersTable tbody');
+    numBody.innerHTML = numbers.map(n => `
+      <tr>
+        <td>${n.number}</td>
+        <td class="status-${n.status}">${n.status}</td>
+        <td>${n.owner_name || '—'}</td>
+        <td>${n.owner_email || '—'}</td>
+        <td>${n.owner_phone || '—'}</td>
+        <td>${n.claimed_at ? new Date(n.claimed_at).toLocaleDateString() : '—'}</td>
+      </tr>`).join('');
+
+    const drawBody = document.querySelector('#drawsTable tbody');
+    drawBody.innerHTML = draws.map(d => `
+      <tr>
+        <td>${d.draw_date}</td>
+        <td>${d.winning_number}</td>
+        <td>${d.winner_name || 'No match'}</td>
+        <td>${d.paid_out ? 'Yes' : (d.winner_name ? 'No' : '—')}</td>
+        <td>${(!d.paid_out && d.winner_name) ? `<button class="secondary" onclick="markPaid('${d.id}')">Mark paid</button>` : ''}</td>
+      </tr>`).join('');
+  }
+
+  async function saveDraw(){
+    const draw_date = document.getElementById('drawDate').value;
+    const winning_number = document.getElementById('winningNumber').value;
+    const errEl = document.getElementById('drawError');
+    const resultEl = document.getElementById('drawResult');
+    errEl.classList.add('hidden');
+    resultEl.textContent = '';
+
+    if(!draw_date || !winning_number){
+      errEl.textContent = 'Enter both the date and the winning number.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await authedFetch('owner-set-winner', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ draw_date, winning_number })
+      });
+      if(!res.ok){
+        const data = await res.json().catch(()=>({}));
+        errEl.textContent = data.error || 'Could not save the draw.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      const { draw } = await res.json();
+      resultEl.textContent = draw.winner_name
+        ? `Winner: ${draw.winner_name} (number ${draw.winning_number})`
+        : `No subscriber currently holds number ${draw.winning_number}.`;
+      await loadData();
+    } catch {
+      errEl.textContent = 'Could not reach the server.';
+      errEl.classList.remove('hidden');
+    }
+  }
+
+  async function markPaid(drawId){
+    await authedFetch('owner-mark-paid', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ draw_id: drawId })
+    });
+    await loadData();
+  }
+
+  // Resume session if we already have a token
+  if(token) showAdmin().catch(()=>{});
+  document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+</script>
+</body>
+</html>

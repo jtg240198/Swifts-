@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Stripe webhooks need the raw request body — make sure this stays as POST-only,
+# Netlify passes the raw body through to functions automatically.

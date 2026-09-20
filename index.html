@@ -388,6 +388,42 @@
     background:var(--gold); color:var(--ink); font-family:'Space Mono',monospace;
     font-size:12px; text-align:center; padding:8px 16px; letter-spacing:0.5px;
   }
+  /* ---------- BONUS BALL ---------- */
+  .bonus-ball{margin-top:48px; padding-top:40px; border-top:1px solid var(--line);}
+  .bb-head{margin-bottom:20px; max-width:520px;}
+  .bb-head h3{font-size:24px; margin-top:6px;}
+  .bb-head p{color:var(--grey); font-size:14px; margin-top:8px;}
+  .bb-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(46px,1fr)); gap:8px; max-width:640px;}
+  .bb-num{
+    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+    font-family:'Space Mono',monospace; font-size:13px; font-weight:700;
+    border:1px solid var(--line); background:var(--ink-2); color:var(--paper);
+    cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .bb-num:hover{border-color:var(--gold);}
+  .bb-num.taken{color:var(--grey); background:transparent; cursor:default; opacity:0.4;}
+  .bb-num.taken:hover{border-color:var(--line);}
+  .bb-num.pending{color:var(--gold); border-color:var(--gold); opacity:0.6; cursor:default;}
+  .bb-overlay{
+    position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7);
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .bb-overlay.open{display:flex;}
+  .bb-modal{
+    background:var(--ink-2); border:1px solid var(--line); padding:28px;
+    max-width:360px; width:100%; position:relative;
+  }
+  .bb-close{
+    position:absolute; top:14px; right:14px; background:none; border:none;
+    color:var(--grey); font-size:22px; cursor:pointer; line-height:1;
+  }
+  .bb-close:hover{color:var(--gold);}
+  .bb-label{display:block; font-family:'Space Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:var(--grey); margin-bottom:6px;}
+  .bb-input{
+    width:100%; padding:10px 12px; margin-bottom:14px; background:var(--ink);
+    border:1px solid var(--line); color:var(--paper); font-size:14px; font-family:inherit;
+  }
+  .bb-error{color:#e2564f; font-size:12px; margin:-6px 0 14px;}
 </style>
 </head>
 <body>
@@ -518,6 +554,31 @@
       <p>Upcoming dates for the diary.</p>
     </div>
     <div id="eventList"></div>
+
+    <div class="bonus-ball" id="bonusBall">
+      <div class="bb-head">
+        <span class="eyebrow">Weekly Draw</span>
+        <h3>Bonus Ball</h3>
+        <p>Pick your number, £5 a week by card. Winner is whatever number matches that Saturday's Irish Lottery bonus ball.</p>
+      </div>
+      <div class="bb-grid" id="bbGrid"><div class="squad-empty">Loading numbers…</div></div>
+    </div>
+
+    <div class="bb-overlay" id="bbOverlay">
+      <div class="bb-modal">
+        <button class="bb-close" id="bbClose" aria-label="Close">&times;</button>
+        <div class="eyebrow">Number <span id="bbSelectedNum"></span></div>
+        <h3 style="margin:8px 0 18px;">Claim this number</h3>
+        <label class="bb-label" for="bbName">Name</label>
+        <input class="bb-input" id="bbName" type="text" autocomplete="name">
+        <label class="bb-label" for="bbEmail">Email</label>
+        <input class="bb-input" id="bbEmail" type="email" autocomplete="email">
+        <label class="bb-label" for="bbPhone">Phone (optional)</label>
+        <input class="bb-input" id="bbPhone" type="tel" autocomplete="tel">
+        <div class="bb-error hidden" id="bbError"></div>
+        <button class="btn btn-solid" id="bbSubmit" style="width:100%; margin-top:6px; cursor:pointer;">Subscribe — £5/week</button>
+      </div>
+    </div>
   </section>
 
   <hr class="divider">
@@ -1140,6 +1201,82 @@
       <h4>${s.name}</h4>${s.note ? `<span class="league">${s.note}</span>` : ''}`;
     sponsorGrid.appendChild(card);
   });
+
+  // ---------- BONUS BALL ----------
+  const FN_BASE = '/.netlify/functions';
+  const bbGrid = document.getElementById('bbGrid');
+  const bbOverlay = document.getElementById('bbOverlay');
+  let bbSelected = null;
+
+  async function loadBonusNumbers(){
+    try {
+      const res = await fetch(`${FN_BASE}/numbers-status`);
+      const { numbers } = await res.json();
+      bbGrid.innerHTML = numbers.map(n => {
+        const cls = n.status === 'free' ? '' : ` ${n.status}`;
+        return `<div class="bb-num${cls}" data-num="${n.number}" data-status="${n.status}">${n.number}</div>`;
+      }).join('');
+      bbGrid.querySelectorAll('.bb-num').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          if(el.dataset.status !== 'free') return;
+          openBonusForm(el.dataset.num);
+        });
+      });
+    } catch {
+      bbGrid.innerHTML = '<div class="squad-empty">Could not load numbers — refresh to try again.</div>';
+    }
+  }
+
+  function openBonusForm(num){
+    bbSelected = num;
+    document.getElementById('bbSelectedNum').textContent = num;
+    document.getElementById('bbName').value = '';
+    document.getElementById('bbEmail').value = '';
+    document.getElementById('bbPhone').value = '';
+    document.getElementById('bbError').classList.add('hidden');
+    bbOverlay.classList.add('open');
+  }
+  document.getElementById('bbClose').addEventListener('click', ()=> bbOverlay.classList.remove('open'));
+  bbOverlay.addEventListener('click', (e)=>{ if(e.target === bbOverlay) bbOverlay.classList.remove('open'); });
+
+  document.getElementById('bbSubmit').addEventListener('click', async ()=>{
+    const name = document.getElementById('bbName').value.trim();
+    const email = document.getElementById('bbEmail').value.trim();
+    const phone = document.getElementById('bbPhone').value.trim();
+    const errEl = document.getElementById('bbError');
+    errEl.classList.add('hidden');
+
+    if(!name || !email){
+      errEl.textContent = 'Name and email are required.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+
+    const btn = document.getElementById('bbSubmit');
+    btn.disabled = true; btn.textContent = 'Starting checkout…';
+
+    try {
+      const res = await fetch(`${FN_BASE}/create-checkout`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ number: bbSelected, name, email, phone })
+      });
+      const data = await res.json();
+      if(!res.ok){
+        errEl.textContent = data.error || 'Could not start checkout.';
+        errEl.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Subscribe — £5/week';
+        loadBonusNumbers(); // refresh in case someone else took it
+        return;
+      }
+      window.location.href = data.url; // off to Stripe Checkout
+    } catch {
+      errEl.textContent = 'Could not reach the server — try again.';
+      errEl.classList.remove('hidden');
+      btn.disabled = false; btn.textContent = 'Subscribe — £5/week';
+    }
+  });
+
+  loadBonusNumbers();
 
   // ---------- INITIAL ROUTE ----------
   // Run last, once every section's content above has been built.
