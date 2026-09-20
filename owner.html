@@ -95,7 +95,7 @@
   <div class="card">
     <h3 style="margin-bottom:14px;">All numbers</h3>
     <table id="numbersTable">
-      <thead><tr><th>#</th><th>Status</th><th>Name</th><th>Email</th><th>Phone</th><th>Since</th></tr></thead>
+      <thead><tr><th>#</th><th>Status</th><th>Name</th><th>Email</th><th>Phone</th><th>Paid for</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -164,7 +164,7 @@
         <td>${n.owner_name || '—'}</td>
         <td>${n.owner_email || '—'}</td>
         <td>${n.owner_phone || '—'}</td>
-        <td>${n.claimed_at ? new Date(n.claimed_at).toLocaleDateString() : '—'}</td>
+        <td>${n.paid_month || '—'}</td>
       </tr>`).join('');
 
     const drawBody = document.querySelector('#drawsTable tbody');

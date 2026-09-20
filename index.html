@@ -1207,11 +1207,24 @@
   const bbGrid = document.getElementById('bbGrid');
   const bbOverlay = document.getElementById('bbOverlay');
   let bbSelected = null;
+  let bbTarget = null; // { monthName, year, saturdays, pricePence }
+
+  function bbButtonLabel(){
+    if(!bbTarget) return 'Pay now';
+    return `Pay £${(bbTarget.pricePence/100).toFixed(2)} — ${bbTarget.saturdays} Saturdays in ${bbTarget.monthName}`;
+  }
 
   async function loadBonusNumbers(){
     try {
       const res = await fetch(`${FN_BASE}/numbers-status`);
-      const { numbers } = await res.json();
+      const { numbers, target } = await res.json();
+      bbTarget = target;
+
+      const head = document.querySelector('.bb-head p');
+      if(head && bbTarget){
+        head.textContent = `Pick your number — £${(bbTarget.pricePence/100).toFixed(2)} covers all ${bbTarget.saturdays} Saturdays in ${bbTarget.monthName} ${bbTarget.year}. Winner each week is whatever number matches that Saturday's Irish Lottery bonus ball.`;
+      }
+
       bbGrid.innerHTML = numbers.map(n => {
         const cls = n.status === 'free' ? '' : ` ${n.status}`;
         return `<div class="bb-num${cls}" data-num="${n.number}" data-status="${n.status}">${n.number}</div>`;
@@ -1234,6 +1247,7 @@
     document.getElementById('bbEmail').value = '';
     document.getElementById('bbPhone').value = '';
     document.getElementById('bbError').classList.add('hidden');
+    document.getElementById('bbSubmit').textContent = bbButtonLabel();
     bbOverlay.classList.add('open');
   }
   document.getElementById('bbClose').addEventListener('click', ()=> bbOverlay.classList.remove('open'));
@@ -1264,7 +1278,7 @@
       if(!res.ok){
         errEl.textContent = data.error || 'Could not start checkout.';
         errEl.classList.remove('hidden');
-        btn.disabled = false; btn.textContent = 'Subscribe — £5/week';
+        btn.disabled = false; btn.textContent = bbButtonLabel();
         loadBonusNumbers(); // refresh in case someone else took it
         return;
       }
@@ -1272,7 +1286,7 @@
     } catch {
       errEl.textContent = 'Could not reach the server — try again.';
       errEl.classList.remove('hidden');
-      btn.disabled = false; btn.textContent = 'Subscribe — £5/week';
+      btn.disabled = false; btn.textContent = bbButtonLabel();
     }
   });
 
