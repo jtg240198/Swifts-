@@ -639,7 +639,7 @@
       teams:[
         {name:"2009s", league:"SBYL", people:[["Coach","Jack Morris"],["Coach","Sean Hughes"]]},
         {name:"2010s", league:"SBYL", people:[["Coach","Patrick Brophy"],["Coach","Gearoid McConville"]]},
-        {name:"2012s", league:"SBYL", people:[["Coach","Joe Diver"]]},
+        {name:"2012s", league:"SBYL", people:[["Coach","Joe Diver"],["Coach","Joseph McCall"],["Coach","Patrick Mallon"]]},
         {name:"2013s", league:"SBYL", people:[["Coach","Caomhin Williamson"],["Coach","Dan Walsh Snr"]]},
         {name:"2013 Colts", league:"SBYL", people:[["Coach","Dan Walsh Snr"],["Coach","Dan Walsh Jnr"]]},
         {name:"2014s", league:"SBYL", people:[["Coach","Michael Flannery"],["Coach","Sean Rooney"]]},
@@ -653,25 +653,34 @@
       name:"Youth — Fonacab",
       note:"Fonacab League",
       teams:[
-        {name:"2017s", league:"Fonacab", people:[["Coach","Jordan Savage"],["Coach","Robbie White"],["Coach","Michael Wilis"]]},
-        {name:"2018s", league:"Fonacab", people:[["Coach","Gerald Tate"],["Coach","Margaret Tate"]]},
         {name:"2019s", league:"Fonacab", people:[["Coach","Stephen McGivern"],["Coach","Daniel Murphy"],["Coach","Kerri McDonagh"]]},
         {name:"2020s / 2021s", league:"Fonacab", people:[["Coach","Mairtin McCashin"],["Coach","Kevin Barry McCluskey"],["Coach","Paul Thompson"],["Coach","Paul Rooney"]]},
+      ]
+    },
+    {
+      name:"Girdwood",
+      note:"Girdwood",
+      teams:[
+        {name:"2015s", league:"SBYL", people:[["Coach","Harry McDonnell"],["Coach","Conor McLarnon"]]},
+        {name:"2017s", league:"Fonacab", people:[["Coach","Jordan Savage"],["Coach","Robbie White"],["Coach","Michael Wilis"]]},
+        {name:"2018s", league:"Fonacab", people:[["Coach","Gerald Tate"],["Coach","Margaret Tate"]]},
       ]
     },
     {
       name:"Mini Swifts",
       note:"Winchester Coaching Academy",
       teams:[
-        {name:"Mini Swifts", league:"Winchester Coaching Academy", people:[["Coach","Joe Diver"],["Coach","Jude Winchester"]]},
+        {name:"Mini Swifts", league:"Winchester Coaching Academy", people:[["Coach","Joe Diver"]]},
       ]
     }
   ];
 
   // League table URLs per team (add as you get them; missing = "Table soon")
   const leagueUrls = {
-    "Ladies": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX0NPTVBFVElUSU9OLGlkPTQ2NDMzODAz"
-    // "1st Team": "https://...",
+    "1st Team": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX01BVENILGlkPTQ4NTI1NzI5",
+    "Reserves": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX01BVENILGlkPTQ5MzQzMjcw",
+    "Strollers": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX01BVENILGlkPTQ5ODk1MzQx",
+    "Ladies": "https://comet.irishfa.com/dlink?p=dHlwZT1UWVBFX01BVENILGlkPTQ2NDM0MTQ2"
     // "2013s": "https://...",
   };
 
@@ -717,9 +726,6 @@
                 ? (leagueUrls[t.name]
                     ? `<a class="card-btn" href="${leagueUrls[t.name]}" target="_blank" rel="noopener">League Table</a>`
                     : `<span class="card-btn disabled">Table soon</span>`)
-                : ``}
-              ${["1st Team","Reserves","Strollers","Ladies"].includes(t.name)
-                ? `<button class="card-btn squad-btn" data-team="${t.name}">Squad</button>`
                 : ``}
               <button class="card-btn photos-btn" data-team="${t.name}">Photos</button>
             </div>
@@ -967,11 +973,13 @@
     const left = f.home ? swifts : opp;
     const right = f.home ? opp : swifts;
     const centre = played && f.score ? f.score : (played ? 'FT' : 'vs');
+    const photo = played && f.photo ? `<img src="${f.photo}" alt="${f.team} vs ${f.opp} result" style="grid-column:1/-1; margin-top:10px; max-width:340px; width:100%; border:1px solid var(--line);" loading="lazy">` : '';
     return `<div class="fixture-card">
       ${left}
       <div class="${played && f.score ? 'score' : 'score pending'}">${centre}</div>
       ${right}
       <div class="tag">${f.tag || f.group}</div>
+      ${photo}
     </div>`;
   }
 
@@ -1061,11 +1069,9 @@
     committeeGrid.appendChild(card);
   });
 
-  // ---------- EVENTS (placeholder) ----------
+  // ---------- EVENTS ----------
   const events = [
-    {d:"05", m:"JUL", title:"Mini Swifts Returns", desc:"Sunday 5th July, 10am at Conway Mill. Ages 2–5, boys & girls — new full-time coaches with JD Coaching and Winchester Coaching Academy. Join the Swifts family!", img:"assets/photos/mini-swifts-event.jpeg"},
-    {d:"08", m:"AUG", title:"1st Team — NCL Opening Game", desc:"National Conference League season opener. Saturday 8th August, 3pm kick-off, Donegal Celtic Park."},
-    {d:"18", m:"AUG", title:"Juvenile Training Recommences", desc:"Tuesday 18th August, 6pm at Coláiste Feirste. All youth age groups back for the new season."},
+    {d:"31", m:"OCT", title:"Halloween Party", desc:"🎃👻 HALLOWEEN PARTY! 👻🎃<br><br>Get ready for a massive night at The Rock Bar, hosted by our fantastic sponsor! 🖤💛 Tickets will be available at home games, or if you can't make it to a game, contact the page to get your tickets.<br><br>🏆 Fancy dress prizes • Games • 🎟️ Ballots • 🍻 Great craic<br><br>It's shaping up to be a brilliant night — get your costumes ready and don't miss out! 🎃🖤💛", img:"assets/events/halloween-party-2026.jpg"},
   ];
   const eventList = document.getElementById('eventList');
   events.forEach(e=>{
